@@ -1,6 +1,6 @@
 # Nightly update of the Fresh Fuel ROAS dashboard
 
-Runs every night at 12:01 AM US Eastern (America/New_York). Read-only on the ad accounts: never change a campaign, ad set or budget.
+Runs every night at 12:01 AM US Central (America/Chicago), the latest ad account time zone, so every account has passed midnight. Can also be run by hand to refresh on demand. Read-only on the ad accounts: never change a campaign, ad set or budget.
 
 1. Make a temp folder RAW. For each client in `fresh-fuel/tools/clients.json` (ad account id `act`), call Meta MCP `ads_get_ad_entities`
    and save the whole answer (or {"error": "<message>"} on failure). Common args: reporting_purpose ["metric_lookup"],
@@ -16,7 +16,7 @@ Runs every night at 12:01 AM US Eastern (America/New_York). Read-only on the ad 
    Follow any pagination cursor and merge pages into one ad_entities list before saving.
 2. `python3 fresh-fuel/tools/build_data.py RAW fresh-fuel/data.json`
 3. Commit only `fresh-fuel/data.json` ("Fresh Fuel nightly data <date>") and push. Push to `main` if `fresh-fuel/` exists on main;
-   otherwise push to branch `fresh-fuel-roas-dashboard` (the preview PR is not merged yet).
+   (it is, since PR #1 merged).
 4. Refresh the private preview: `python3 fresh-fuel/tools/make_artifact.py fresh-fuel/index.html <scratch>/ffroas`, then Artifact publish
    `<scratch>/ffroas/index.html` with files {"data.json": "<scratch>/ffroas/data.json"} and url https://claude.ai/artifact/7ZWLhAe96AwV1cCJuEgMBD
    (read it first with action "read").
