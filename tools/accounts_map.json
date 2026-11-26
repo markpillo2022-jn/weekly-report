@@ -1,0 +1,290 @@
+[
+ {
+  "task_id": "86bbwmg6e",
+  "account": "Chamblee Fence Company",
+  "meta_account_id": "",
+  "note": "Meta account 2275754042834336 not yet enabled for API access",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=2275754042834336",
+  "order": 10
+ },
+ {
+  "task_id": "86bbm4r6v",
+  "account": "Gulf States Roofing & Construction Inc",
+  "meta_account_id": "1296626455303534",
+  "note": "",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=1296626455303534",
+  "order": 9
+ },
+ {
+  "task_id": "86bbj6vbp",
+  "account": "E-Z General & Roofing Contractors Inc",
+  "meta_account_id": "417316994259497",
+  "note": "",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=417316994259497",
+  "order": 13
+ },
+ {
+  "task_id": "86bbc8tu4",
+  "account": "Elevate Home Remodeling Group",
+  "meta_account_id": "",
+  "note": "Meta account 29338096315780534 is UNSETTLED (billing), data locked",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=29338096315780534",
+  "order": 11
+ },
+ {
+  "task_id": "86bb339z0",
+  "account": "AmeriSide Exteriors",
+  "meta_account_id": "",
+  "note": "Meta account 1236024245285829 not yet enabled for API access",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=1236024245285829",
+  "order": 7
+ },
+ {
+  "task_id": "86b9fzg6n",
+  "account": "ezroof",
+  "meta_account_id": "238415254239741",
+  "note": "",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=238415254239741",
+  "order": 9
+ },
+ {
+  "task_id": "86b9fzg4j",
+  "account": "RoofUs Roofing",
+  "meta_account_id": "1050761657726493",
+  "note": "",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=1050761657726493",
+  "order": 12
+ },
+ {
+  "task_id": "86b9fzg4d",
+  "account": "Home Pro Roofing",
+  "meta_account_id": "683621070116722",
+  "note": "",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=683621070116722",
+  "order": 4
+ },
+ {
+  "task_id": "86b9fzfhy",
+  "account": "4 Seasons Construction & Roofing",
+  "meta_account_id": "26227410460291898",
+  "note": "",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=26227410460291898",
+  "order": 10
+ },
+ {
+  "task_id": "86b9fzfg5",
+  "account": "Bedrock Roofing Llc",
+  "meta_account_id": "1129711328727807",
+  "note": "Meta ID matched by name (blank in ClickUp directory)",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=1129711328727807",
+  "order": 3
+ },
+ {
+  "task_id": "86b9fzffu",
+  "account": "QCAG LLC",
+  "meta_account_id": "2095899797880460",
+  "note": "",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=2095899797880460",
+  "order": 6
+ },
+ {
+  "task_id": "86b9fzfej",
+  "account": "AWS Restorations",
+  "meta_account_id": "",
+  "note": "No Meta ad account found (blank in ClickUp, no name match)",
+  "ads_url": "",
+  "order": 2
+ },
+ {
+  "task_id": "86b9fzfab",
+  "account": "Dover Roofing",
+  "meta_account_id": "399005786516395",
+  "note": "",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=399005786516395",
+  "order": 3
+ },
+ {
+  "task_id": "86b9fzf9j",
+  "account": "S&K Construction and Remodeling",
+  "meta_account_id": "8516786211695272",
+  "note": "",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=8516786211695272",
+  "order": 8
+ },
+ {
+  "task_id": "86b9fzf95",
+  "account": "Compass Roofing TX",
+  "meta_account_id": "1264892167722874",
+  "note": "",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=1264892167722874",
+  "order": 11
+ },
+ {
+  "task_id": "86b9fzf6u",
+  "account": "Four Point Construction",
+  "meta_account_id": "3713219945590103",
+  "note": "",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=3713219945590103",
+  "order": 5
+ },
+ {
+  "task_id": "86b9fzf6k",
+  "account": "Bishop Exteriors",
+  "meta_account_id": "745935614087560",
+  "note": "Meta ID matched by name (blank in ClickUp directory)",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=745935614087560",
+  "order": 1
+ },
+ {
+  "task_id": "86b9fzf4f",
+  "account": "A-1 Contractors, Inc.",
+  "meta_account_id": "",
+  "note": "No Meta ad account found (blank in ClickUp, no name match)",
+  "ads_url": "",
+  "order": 1
+ },
+ {
+  "task_id": "86b9fzf3v",
+  "account": "Timberline Roofing",
+  "meta_account_id": "1843035816470342",
+  "note": "Meta ID matched by name (blank in ClickUp directory)",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=1843035816470342",
+  "order": 6
+ },
+ {
+  "task_id": "86b9fzf25",
+  "account": "Raw Roofing LLC",
+  "meta_account_id": "2903817899760255",
+  "note": "Meta ID matched by name (blank in ClickUp directory)",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=2903817899760255",
+  "order": 5
+ },
+ {
+  "task_id": "86b9fzf05",
+  "account": "IRoof",
+  "meta_account_id": "",
+  "note": "Meta account 1732638083534679 is UNSETTLED (billing), data locked",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=1732638083534679",
+  "order": 3
+ },
+ {
+  "task_id": "86b9fzf03",
+  "account": "Gutapfel Roofing (Ladder Lions Roofing)",
+  "meta_account_id": "1020606956240533",
+  "note": "",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=1020606956240533",
+  "order": 2
+ },
+ {
+  "task_id": "86b9fzeza",
+  "account": "LMP Roofing and Construction",
+  "meta_account_id": "897294069706811",
+  "note": "Meta ID matched by name (blank in ClickUp directory)",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=897294069706811",
+  "order": 4
+ },
+ {
+  "task_id": "86b9fzexn",
+  "account": "Designer Roofing and Restoration",
+  "meta_account_id": "509238129596403",
+  "note": "",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=509238129596403",
+  "order": 2
+ },
+ {
+  "task_id": "86b9fzex2",
+  "account": "Shelter Roofing and Solar",
+  "meta_account_id": "",
+  "note": "Meta account 239571791769067 is UNSETTLED (billing), data locked",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=239571791769067",
+  "order": 3
+ },
+ {
+  "task_id": "86b9fzer0",
+  "account": "Joostens Roofing inc",
+  "meta_account_id": "1940893346503186",
+  "note": "",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=1940893346503186",
+  "order": 8
+ },
+ {
+  "task_id": "86b9fzep8",
+  "account": "MK Contractors LLC",
+  "meta_account_id": "837890947844904",
+  "note": "Meta ID matched by name (blank in ClickUp directory)",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=837890947844904",
+  "order": 5
+ },
+ {
+  "task_id": "86b9fzem0",
+  "account": "Kirkness Roofing & Exteriors",
+  "meta_account_id": "",
+  "note": "Meta account 633281484657489 is UNSETTLED (billing), data locked",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=633281484657489",
+  "order": 4
+ },
+ {
+  "task_id": "86b9fzek8",
+  "account": "Rebuild America Inc",
+  "meta_account_id": "",
+  "note": "Meta account 361424800 is UNSETTLED (billing), data locked",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=361424800",
+  "order": 6
+ },
+ {
+  "task_id": "86b9fzeh3",
+  "account": "Columbia Contracting LLC",
+  "meta_account_id": "",
+  "note": "Meta account 552267082947887 not yet enabled for API access",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=552267082947887",
+  "order": 4
+ },
+ {
+  "task_id": "86b9fzed8",
+  "account": "Hermes Roofing (ProRoof USA Roofing)",
+  "meta_account_id": "1042931787587416",
+  "note": "",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=1042931787587416",
+  "order": 5
+ },
+ {
+  "task_id": "86b9fzeam",
+  "account": "VersaCon LLC",
+  "meta_account_id": "",
+  "note": "Meta account 416892603807316 is UNSETTLED (billing), data locked",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=416892603807316",
+  "order": 1
+ },
+ {
+  "task_id": "86b9fzea3",
+  "account": "Guardian Roofs",
+  "meta_account_id": "341366557707951",
+  "note": "",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=341366557707951",
+  "order": 1
+ },
+ {
+  "task_id": "86b9fze8k",
+  "account": "Whitney Roofing Inc.",
+  "meta_account_id": "570019316758756",
+  "note": "",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=570019316758756",
+  "order": 7
+ },
+ {
+  "task_id": "86b9fze6a",
+  "account": "Rhoden Roofing",
+  "meta_account_id": "391201452004695",
+  "note": "",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=391201452004695",
+  "order": 7
+ },
+ {
+  "task_id": "86b9fze61",
+  "account": "Buena Vista Roofing & Construction Inc.",
+  "meta_account_id": "",
+  "note": "Meta account 2982259955262334 is UNSETTLED (billing), data locked",
+  "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=2982259955262334",
+  "order": 2
+ }
+]
