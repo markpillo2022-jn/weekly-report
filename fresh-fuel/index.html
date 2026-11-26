@@ -166,8 +166,8 @@
   <header class="wam-hero" id="overview">
     <div class="wam-hero-text">
       <p class="wam-eyebrow">Fresh Fuel Marketing · Meta ecom accounts</p>
-      <h1 class="wam-title">Weekly ROAS Report</h1>
-      <p class="wam-lede" id="lede">Loading the latest numbers…</p>
+      <h1 class="wam-title">Daily ROAS Report</h1>
+      <p class="wam-lede" id="lede">Spend, ROAS and cost per lead for every Fresh Fuel Marketing client on Meta. Data refreshes automatically every 6 hours, and sooner whenever it is refreshed manually on the back end.</p>
     </div>
     <div class="wam-actions">
       <span class="wam-view">View only</span>
@@ -307,15 +307,6 @@
     $('stamp').textContent = 'Updated ' + when(d.generated_at);
     const t = d.team, bc = t.by_currency, curs = Object.keys(bc);
     const both = (k) => curs.map((c) => m0(c, bc[c][k]));
-    const lede = $('lede'); lede.replaceChildren();
-    const b = (s) => el('b', null, s);
-    const sp = both('spend_7'), sv = both('value_7');
-    lede.append('In the last 7 days ', b(d.manager), ' spent ', b(sp.join(' + ')), ' across ', b(String(t.clients)), ' ecom clients and brought in ', b(sv.join(' + ')),
-      ' in sales' + (t.roas_7 ? ', a blended ' : '.'), ...(t.roas_7 ? [b(rx(t.roas_7) + ' ROAS'), '.'] : []));
-    const hit = d.clients.filter((c) => mStatus(c, c.totals[c.metric + '_7'], c.totals.spend_7) === 'good').map((c) => c.label);
-    lede.append(' ', b(hit.length + ' of ' + d.clients.length), ' clients hit their target this week' + (hit.length ? ' (' + hit.join(', ') + ').' : '.'));
-    const leadC = d.clients.filter(isCpl);
-    if (leadC.length) lede.append(' ' + leadC.map((c) => c.label).join(', ') + ' runs lead campaigns and is tracked on cost per lead in its own box below.');
     chart(d.clients, '7'); chart(d.clients, '14'); chart(d.clients, 'mtd');
     const tabs = $('tabs'); tabs.replaceChildren();
     const mkTab = (key, label, color) => { const bt = el('button', 'wam-tab'); bt.dataset.tab = key; if (color) { bt.style.setProperty('--c', color); bt.append(el('span', 'dot')); } bt.append(label); bt.addEventListener('click', () => { show(key); history.replaceState(null, '', '#' + key); }); tabs.append(bt); };
@@ -334,7 +325,7 @@
   fetch('data.json?v=' + Date.now(), { cache: 'no-store' })
     .then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(render)
-    .catch((e) => { $('boards').replaceChildren(el('div', 'wam-error', 'The report data could not be loaded (' + e.message + '). Try reloading the page.')); $('lede').textContent = ''; });
+    .catch((e) => { $('boards').replaceChildren(el('div', 'wam-error', 'The report data could not be loaded (' + e.message + '). Try reloading the page.')); });
 })();
 </script>
 </body>
