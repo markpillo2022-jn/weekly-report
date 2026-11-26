@@ -1,6 +1,6 @@
 # Nightly update of the public weekly report
 
-Runs every night at 12:00 AM Asia/Manila (16:00 UTC). Goal: refresh `data.json` in the GitHub repository so the public domain shows current numbers.
+Runs every night at 12:01 AM US Eastern (America/New_York). Goal: refresh `data.json` in the GitHub repository so the public domain shows current numbers.
 
 1. Make a temp folder RAW.
 2. ClickUp (connector ClickUp, tool clickup_filter_tasks) for each manager, save the whole JSON answer as RAW/dir_<key>.json:
