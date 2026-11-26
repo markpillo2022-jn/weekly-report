@@ -140,6 +140,9 @@
   .wam-mgr-name a { color: #fff; text-decoration: none; border-bottom: 2px solid rgba(255,255,255,.35); }
   .wam-mgr-name a::after { content: " \2197"; font-size: .6em; opacity: .7; }
   .wam-kpi-sub b { color: var(--color-fg); }
+  .wam-charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); gap: 18px 36px; }
+  .wam-chartcol { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .wam-h3 { margin: 0; font-size: 14px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--color-fg-muted); }
   .wam-pill.plain { color: var(--color-fg); background: color-mix(in srgb, var(--color-fg) 8%, var(--color-panel)); }
   .wam-pill.plain::before { display: none; }
   @media (prefers-reduced-motion: no-preference) {
@@ -174,8 +177,11 @@
   </div>
 
   <section class="wam-card">
-    <h2 class="wam-h2">Last 7 days by client</h2>
-    <div class="wam-chart" id="chart" role="img" aria-label="Last 7 days spend by client, with ROAS colored against the target"></div>
+    <h2 class="wam-h2">Spend and results by client</h2>
+    <div class="wam-charts">
+      <div class="wam-chartcol"><h3 class="wam-h3">Last 7 days</h3><div class="wam-chart" id="chart7" role="img" aria-label="Last 7 days spend by client, with ROAS or cost per lead colored against each client's target"></div></div>
+      <div class="wam-chartcol"><h3 class="wam-h3">Last 14 days</h3><div class="wam-chart" id="chart14" role="img" aria-label="Last 14 days spend by client, with ROAS or cost per lead colored against each client's target"></div></div>
+    </div>
   </section>
 
   <nav class="wam-tabs" id="tabs" aria-label="Filter by client"></nav>
@@ -186,7 +192,7 @@
     <summary>How these numbers work</summary>
     <ul>
       <li>Each client is one Meta ad account. All of them are managed by Mark Pilio.</li>
-      <li>Clients, and the campaigns under each one, are ordered by last-7-day spend, top spender first. Every campaign that spent money in the last 30 days is listed; a green dot means it is active.</li>
+      <li>Clients, and the campaigns under each one, are ordered by last-7-day spend, top spender first. Only active campaigns are listed. The client totals in each header still count every campaign that spent, including ones paused since.</li>
       <li>ROAS is Meta's purchase conversion value divided by spend for the same period, using each campaign's own attribution setting. Each client has its own target, shown in its header and at the top. Green meets it, red misses it. "No sales" means money was spent but no purchase value was recorded. A dash means nothing was spent.</li>
       <li>Last 7, 14 and 30 days end yesterday in each account's time zone. Overall is the whole life of the campaign (or the account, on the client header) and includes today so far.</li>
       <li>Worksport and Swift are billed in Canadian dollars, the others in US dollars. Each client shows its own currency. The blended ROAS in the summary at the top adds Worksport's CAD to the USD clients without converting them, so treat it as a rough guide.</li>
@@ -220,9 +226,9 @@
     return el('span', 'wam-pill ' + (st || 'plain'), t);
   }
 
-  function chart(clients) {
-    const W = 900, rowH = 46, pad = 130, H = clients.length * rowH + 10;
-    const max = Math.max(1, ...clients.map((c) => c.totals.spend_7));
+  function chart(clients, p) {
+    const W = 640, rowH = 46, pad = 120, H = clients.length * rowH + 10;
+    const max = Math.max(1, ...clients.map((c) => c.totals['spend_' + p] || 0));
     const ns = 'http://www.w3.org/2000/svg';
     const svg = document.createElementNS(ns, 'svg');
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
@@ -230,15 +236,16 @@
       const y = i * rowH + 8;
       const mk = (t, a) => { const n = document.createElementNS(ns, t); Object.entries(a).forEach(([k, v]) => n.setAttribute(k, v)); svg.append(n); return n; };
       mk('text', { x: 0, y: y + 19, fill: 'currentColor', 'font-weight': 700 }).textContent = c.label;
-      const bw = W - pad - 260;
+      const bw = W - pad - 250;
       mk('rect', { x: pad, y: y, width: bw, height: 28, rx: 14, fill: 'currentColor', opacity: 0.08 });
-      mk('rect', { x: pad, y: y, width: Math.max(4, bw * c.totals.spend_7 / max), height: 28, rx: 14, fill: c.color });
-      mk('text', { x: pad + bw + 12, y: y + 19, fill: 'currentColor', 'font-weight': 700 }).textContent = m0(c.currency, c.totals.spend_7);
-      const st = mStatus(c, c.totals[c.metric + '_7'], c.totals.spend_7);
-      mk('text', { x: pad + bw + 150, y: y + 19, fill: st === 'good' ? '#16a34a' : st === 'bad' ? '#dc2626' : 'currentColor', 'font-weight': 700 })
-        .textContent = mText(c, c.totals[c.metric + '_7'], c.totals.spend_7) + (c.totals[c.metric + '_7'] > 0 ? ' ' + mName(c) : '');
+      mk('rect', { x: pad, y: y, width: Math.max(4, bw * (c.totals['spend_' + p] || 0) / max), height: 28, rx: 14, fill: c.color });
+      mk('text', { x: pad + bw + 12, y: y + 19, fill: 'currentColor', 'font-weight': 700 }).textContent = m0(c.currency, c.totals['spend_' + p] || 0);
+      const v = c.totals[c.metric + '_' + p], sp = c.totals['spend_' + p];
+      const st = mStatus(c, v, sp);
+      mk('text', { x: W, 'text-anchor': 'end', y: y + 19, fill: st === 'good' ? '#16a34a' : st === 'bad' ? '#dc2626' : 'currentColor', 'font-weight': 700 })
+        .textContent = mText(c, v, sp) + (v > 0 ? ' ' + mName(c) : '');
     });
-    $('chart').replaceChildren(svg);
+    $('chart' + p).replaceChildren(svg);
   }
 
   function board(c, manager) {
@@ -249,7 +256,7 @@
     const nm = el('div');
     const h = el('h2', 'wam-mgr-name');
     const a = el('a', null, c.label); a.href = c.ads_url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.title = 'Open in Meta Ads Manager'; h.append(a);
-    nm.append(h, el('span', 'wam-mgr-count', c.totals.campaigns + ' campaigns · ' + c.totals.active + ' active · ' + c.currency), el('span', 'wam-mgrline', 'Account manager: ' + manager + ' · Target: ' + tgtText(c)));
+    nm.append(h, el('span', 'wam-mgr-count', c.rows.length + ' active campaigns · ' + c.currency), el('span', 'wam-mgrline', 'Account manager: ' + manager + ' · Target: ' + tgtText(c)));
     id.append(nm);
     const chips = el('div', 'wam-chips');
     const t = c.totals;
@@ -266,7 +273,7 @@
     tb0.innerHTML = '<thead><tr><th></th><th colspan="4" class="wam-group wam-sep"><span>Spend</span></th><th colspan="4" class="wam-group wam-sep"><span>' + (isCpl(c) ? 'Cost per lead' : 'ROAS') + '</span></th></tr>' +
       '<tr><th scope="col">Campaign</th>' + hdr + hdr + '</tr></thead>';
     const tb = el('tbody');
-    if (!c.rows.length) { const tr = el('tr'); const td = el('td', 'wam-na', 'No campaigns spent in the last 30 days.'); td.colSpan = 9; tr.append(td); tb.append(tr); }
+    if (!c.rows.length) { const tr = el('tr'); const td = el('td', 'wam-na', 'No active campaigns right now.'); td.colSpan = 9; tr.append(td); tb.append(tr); }
     c.rows.forEach((r) => {
       const tr = el('tr');
       const tdC = el('td', 'wam-camp');
@@ -299,7 +306,7 @@
     lede.append(' ', b(hit.length + ' of ' + d.clients.length), ' clients hit their target this week' + (hit.length ? ' (' + hit.join(', ') + ').' : '.'));
     const leadC = d.clients.filter(isCpl);
     if (leadC.length) lede.append(' ' + leadC.map((c) => c.label).join(', ') + ' runs lead campaigns and is tracked on cost per lead in its own box below.');
-    chart(d.clients);
+    chart(d.clients, '7'); chart(d.clients, '14');
     const tabs = $('tabs'); tabs.replaceChildren();
     const mkTab = (key, label, color) => { const bt = el('button', 'wam-tab'); bt.dataset.tab = key; if (color) { bt.style.setProperty('--c', color); bt.append(el('span', 'dot')); } bt.append(label); bt.addEventListener('click', () => { show(key); history.replaceState(null, '', '#' + key); }); tabs.append(bt); };
     mkTab('all', 'All clients');

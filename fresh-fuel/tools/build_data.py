@@ -84,10 +84,10 @@ def main(raw, out_path):
         rows.sort(key=lambda r: (-r["spend_7"], -r["spend_14"], -r["spend_30"], -r["spend_all"]))  # top spender first
         S = lambda k: sum(r[k] for r in rows)
         a = acct[0] if acct else {}
-        t = dict(campaigns=len(rows), active=sum(r["active"] for r in rows))
+        t = dict(campaigns=len(rows), active=sum(r["active"] for r in rows))  # totals cover every campaign, active or paused
         for p, s, v in (("all", num(a.get("amount_spent")), num(a.get(field))), ("30", S("spend_30"), S(f"{V}_30")), ("14", S("spend_14"), S(f"{V}_14")), ("7", S("spend_7"), S(f"{V}_7"))):
             t[f"spend_{p}"] = r2(s); t[f"{V}_{p}"] = int(v) if V == "leads" else r2(v); t[f"{m}_{p}"] = ratio(m, s, v)
-        entry |= dict(totals=t, rows=rows)
+        entry |= dict(totals=t, rows=[r for r in rows if r["active"]])  # only active campaigns are listed
         out["clients"].append(entry)
         if m == "roas":
             for k in ("spend_30", "value_30", "spend_14", "value_14", "spend_7", "value_7"):
