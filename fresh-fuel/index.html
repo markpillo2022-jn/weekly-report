@@ -15,10 +15,11 @@
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
-    :root { --color-bg: #0b1220; --color-panel: #121a2b; --color-fg: #e8ecf5; --color-fg-muted: #9aa4b8; --color-border-line: #26304a; color-scheme: dark; }
+    :root:not([data-theme="light"]) { --color-bg: #0b1220; --color-panel: #121a2b; --color-fg: #e8ecf5; --color-fg-muted: #9aa4b8; --color-border-line: #26304a; color-scheme: dark; }
   }
+  :root[data-theme="dark"] { --color-bg: #0b1220; --color-panel: #121a2b; --color-fg: #e8ecf5; --color-fg-muted: #9aa4b8; --color-border-line: #26304a; color-scheme: dark; }
   html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); font-family: var(--font-anthropic-sans); -webkit-font-smoothing: antialiased; }
-  .page { max-width: 1280px; margin: 0 auto; padding: 24px 16px 48px; }
+  .page { max-width: 1280px; margin: 0 auto; padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
   .wam-chart svg { display: block; width: 100%; height: auto; }
   .wam-view { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 8px 14px; border-radius: 999px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.3); color: #fff; }
   .wam-error { padding: 24px; border-radius: 18px; background: var(--wam-bad-bg, #fee2e2); color: #991b1b; font-weight: 600; }
