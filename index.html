@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Weekly Ads Report</title>
+<title>FB Ads Team Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -43,6 +43,8 @@
   .wam-eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 4px rgba(34,197,94,.25); }
   .wam-title { font-family: var(--font-anthropic-sans); font-weight: 800; font-size: clamp(28px, 4vw, 42px); line-height: 1.1; letter-spacing: -.02em; margin: 0; text-wrap: balance; color: #fff; }
   .wam-lede { margin: 12px 0 0; font-size: 18px; color: rgba(255,255,255,.82); max-width: 62ch; }
+  .wam-note { margin: 10px 0 0; font-size: 14.5px; color: rgba(255,255,255,.78); max-width: 70ch; display: flex; gap: 8px; align-items: baseline; }
+  .wam-note::before { content: "\21BB"; color: #fed7aa; font-weight: 700; }
   .wam-lede b { color: #fff; font-weight: 700; font-variant-numeric: tabular-nums; }
   .wam-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
   .wam-stamp { font-size: 14px; color: rgba(255,255,255,.75); font-variant-numeric: tabular-nums; }
@@ -152,8 +154,9 @@
   <header class="wam-hero" id="overview">
     <div class="wam-hero-text">
       <p class="wam-eyebrow">Roofer Marketers · JN Conversion campaigns</p>
-      <h1 class="wam-title">Weekly Ads Manager Report</h1>
+      <h1 class="wam-title">FB Ads Team Dashboard</h1>
       <p class="wam-lede" id="lede">Loading the latest numbers…</p>
+      <p class="wam-note">Auto-updates every day at 12 midnight (ad account time) and every 6 hours after that. An admin can also update it manually on the back end at any time.</p>
     </div>
     <div class="wam-actions">
       <span class="wam-view">View only</span>
@@ -198,7 +201,7 @@
       <li>Only campaigns whose name starts with "JN Conversion" count. Accounts with no such campaign are left out.</li>
       <li>Cost per lead is spend divided by Meta's Leads count for the same period. Green is at or under the target, red is over it. "No leads" means money was spent but no leads were recorded. A dash means nothing was spent.</li>
       <li>N/A means Meta doesn't let the report read that ad account yet. Amber rows were typed in by the team from Ads Manager.</li>
-      <li>This page is a view-only copy that updates automatically every night at 12:01 AM US Eastern time.</li>
+      <li>This page is a view-only copy. Auto-updates every day at 12 midnight (ad account time) and every 6 hours after that. An admin can also update it manually on the back end at any time.</li>
     </ul>
   </details>
 </div>
