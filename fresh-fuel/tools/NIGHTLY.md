@@ -12,6 +12,7 @@ Runs every night at 12:01 AM US Eastern (America/New_York). Read-only on the ad 
    - RAW/life_<act>.json level "campaign", date_preset "maximum", fields ["name","amount_spent","omni_purchase_values","lead","effective_status"],
      object_ids = every campaign id in d30_<act>.json
    - RAW/acct_<act>.json level "ad_account", date_preset "maximum", fields ["amount_spent","omni_purchase_values","lead"]
+   - RAW/mtd_<act>.json  same as acct, date_preset "this_month"
    Follow any pagination cursor and merge pages into one ad_entities list before saving.
 2. `python3 fresh-fuel/tools/build_data.py RAW fresh-fuel/data.json`
 3. Commit only `fresh-fuel/data.json` ("Fresh Fuel nightly data <date>") and push. Push to `main` if `fresh-fuel/` exists on main;

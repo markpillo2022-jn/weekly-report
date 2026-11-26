@@ -10,6 +10,7 @@ RAW_DIR holds, for each client's ad account id <act>, the saved ads_get_ad_entit
   d7_<act>.json    level campaign, date_preset last_7d,  amount_spent > 0
   life_<act>.json  level campaign, date_preset maximum, object_ids = the campaign ids in d30
   acct_<act>.json  level ad_account, date_preset maximum
+  mtd_<act>.json   level ad_account, date_preset this_month (month to date, for the top chart; optional)
 fields: name, amount_spent, omni_purchase_values, lead (life adds effective_status).
 ROAS clients use omni_purchase_values; CPL clients use lead.
 """
@@ -87,6 +88,10 @@ def main(raw, out_path):
         t = dict(campaigns=len(rows), active=sum(r["active"] for r in rows))  # totals cover every campaign, active or paused
         for p, s, v in (("all", num(a.get("amount_spent")), num(a.get(field))), ("30", S("spend_30"), S(f"{V}_30")), ("14", S("spend_14"), S(f"{V}_14")), ("7", S("spend_7"), S(f"{V}_7"))):
             t[f"spend_{p}"] = r2(s); t[f"{V}_{p}"] = int(v) if V == "leads" else r2(v); t[f"{m}_{p}"] = ratio(m, s, v)
+        mtd = load(os.path.join(raw, f"mtd_{act}.json"))
+        if mtd:
+            ms, mv = num(mtd[0].get("amount_spent")), num(mtd[0].get(field))
+            t["spend_mtd"] = r2(ms); t[f"{V}_mtd"] = int(mv) if V == "leads" else r2(mv); t[f"{m}_mtd"] = ratio(m, ms, mv)
         entry |= dict(totals=t, rows=[r for r in rows if r["active"]])  # only active campaigns are listed
         out["clients"].append(entry)
         if m == "roas":
