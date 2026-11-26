@@ -6,6 +6,7 @@ Usage: python3 build_data.py RAW_DIR OUT_JSON
 Clients, targets (ROAS multiple, or cost per lead in the account currency) and colors live in clients.json next to this file.
 RAW_DIR holds, for each client's ad account id <act>, the saved ads_get_ad_entities answers (or {"error": "..."}):
   d30_<act>.json   level campaign, date_preset last_30d, amount_spent > 0
+  d14_<act>.json   level campaign, date_preset last_14d, amount_spent > 0
   d7_<act>.json    level campaign, date_preset last_7d,  amount_spent > 0
   life_<act>.json  level campaign, date_preset maximum, object_ids = the campaign ids in d30
   acct_<act>.json  level ad_account, date_preset maximum
@@ -61,20 +62,21 @@ def main(raw, out_path):
         m, act = c["metric"], c["act"]
         V = "leads" if m == "cpl" else "value"
         field = "lead" if m == "cpl" else "omni_purchase_values"
-        d30, d7, life, acct = (load(os.path.join(raw, f"{p}_{act}.json")) for p in ("d30", "d7", "life", "acct"))
+        d30, d14, d7, life, acct = (load(os.path.join(raw, f"{p}_{act}.json")) for p in ("d30", "d14", "d7", "life", "acct"))
         entry = dict(key=c["key"], label=c["label"], color=c["color"], metric=m, target=c.get("target"), currency=c["currency"],
                      timezone=c["timezone"], ads_url="https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=" + act)
-        if d30 is None or d7 is None or life is None or acct is None:
+        if any(x is None for x in (d30, d14, d7, life, acct)):
             entry |= dict(error="Meta could not be read for this account", totals={}, rows=[])
             out["clients"].append(entry)
             continue
         by7 = {e["id"]: e for e in d7}
+        by14 = {e["id"]: e for e in d14}
         byl = {e["id"]: e for e in life}
         rows = []
         for e in d30:
-            i = e["id"]; s7e = by7.get(i, {}); le = byl.get(i, {})
+            i = e["id"]; s7e = by7.get(i, {}); s14e = by14.get(i, {}); le = byl.get(i, {})
             vals = {"all": (num(le.get("amount_spent")), num(le.get(field))), "30": (num(e.get("amount_spent")), num(e.get(field))),
-                    "7": (num(s7e.get("amount_spent")), num(s7e.get(field)))}
+                    "14": (num(s14e.get("amount_spent")), num(s14e.get(field))), "7": (num(s7e.get("amount_spent")), num(s7e.get(field)))}
             r = dict(campaign=e.get("name", ""), active=le.get("effective_status") == "ACTIVE")
             for p, (s, v) in vals.items():
                 r[f"spend_{p}"] = r2(s); r[f"{V}_{p}"] = int(v) if V == "leads" else r2(v); r[f"{m}_{p}"] = ratio(m, s, v)
@@ -83,16 +85,16 @@ def main(raw, out_path):
         S = lambda k: sum(r[k] for r in rows)
         a = acct[0] if acct else {}
         t = dict(campaigns=len(rows), active=sum(r["active"] for r in rows))
-        for p, s, v in (("all", num(a.get("amount_spent")), num(a.get(field))), ("30", S("spend_30"), S(f"{V}_30")), ("7", S("spend_7"), S(f"{V}_7"))):
+        for p, s, v in (("all", num(a.get("amount_spent")), num(a.get(field))), ("30", S("spend_30"), S(f"{V}_30")), ("14", S("spend_14"), S(f"{V}_14")), ("7", S("spend_7"), S(f"{V}_7"))):
             t[f"spend_{p}"] = r2(s); t[f"{V}_{p}"] = int(v) if V == "leads" else r2(v); t[f"{m}_{p}"] = ratio(m, s, v)
         entry |= dict(totals=t, rows=rows)
         out["clients"].append(entry)
         if m == "roas":
-            for k in ("spend_30", "value_30", "spend_7", "value_7"):
+            for k in ("spend_30", "value_30", "spend_14", "value_14", "spend_7", "value_7"):
                 tot.setdefault(c["currency"], {}).setdefault(k, 0); tot[c["currency"]][k] += t[k]
     team = {"clients": sum(1 for c in out["clients"] if c["metric"] == "roas" and not c.get("error")), "by_currency": {}}
     for cur, d in tot.items():
-        team["by_currency"][cur] = {k: r2(v) for k, v in d.items()} | {"roas_30": ratio("roas", d["spend_30"], d["value_30"]), "roas_7": ratio("roas", d["spend_7"], d["value_7"])}
+        team["by_currency"][cur] = {k: r2(v) for k, v in d.items()} | {"roas_30": ratio("roas", d["spend_30"], d["value_30"]), "roas_14": ratio("roas", d["spend_14"], d["value_14"]), "roas_7": ratio("roas", d["spend_7"], d["value_7"])}
     g = lambda k: sum(d[k] for d in tot.values())
     team |= {"roas_7": ratio("roas", g("spend_7"), g("value_7")), "roas_30": ratio("roas", g("spend_30"), g("value_30"))}
     out["team"] = team

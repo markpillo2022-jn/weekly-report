@@ -7,6 +7,7 @@ Runs every night at 12:01 AM US Eastern (America/New_York). Read-only on the ad 
    include_additional_context false, advertiser_job "report_measure_or_look_up", scheduled_task_run true.
    - RAW/d30_<act>.json  level "campaign", date_preset "last_30d", fields ["name","amount_spent","omni_purchase_values","lead"],
      filtering [{"field":"amount_spent","operator":"GREATER_THAN","value":["0"]}], limit 200
+   - RAW/d14_<act>.json  same, date_preset "last_14d"
    - RAW/d7_<act>.json   same, date_preset "last_7d"
    - RAW/life_<act>.json level "campaign", date_preset "maximum", fields ["name","amount_spent","omni_purchase_values","lead","effective_status"],
      object_ids = every campaign id in d30_<act>.json
