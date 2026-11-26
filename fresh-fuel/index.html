@@ -139,6 +139,8 @@
   .wam-mgr-name a { color: #fff; text-decoration: none; border-bottom: 2px solid rgba(255,255,255,.35); }
   .wam-mgr-name a::after { content: " \2197"; font-size: .6em; opacity: .7; }
   .wam-kpi-sub b { color: var(--color-fg); }
+  .wam-pill.plain { color: var(--color-fg); background: color-mix(in srgb, var(--color-fg) 8%, var(--color-panel)); }
+  .wam-pill.plain::before { display: none; }
   @media (prefers-reduced-motion: no-preference) {
     .wam-kpi, .wam-mgr, .wam-card { animation: wam-rise .5s var(--cds-ease-out, ease-out) both; }
     .wam-kpis .wam-kpi:nth-child(2) { animation-delay: .05s; } .wam-kpis .wam-kpi:nth-child(3) { animation-delay: .1s; }
@@ -174,9 +176,9 @@
   <section class="wam-kpis" aria-label="Totals">
     <div class="wam-kpi" style="--k:#2563eb"><span class="wam-kpi-label">Spend · last 7 days</span><span class="wam-kpi-value" id="k-spend_7">—</span><span class="wam-kpi-sub" id="k-spend_7-sub">&nbsp;</span></div>
     <div class="wam-kpi" style="--k:#0ea5a4"><span class="wam-kpi-label">Sales value · last 7 days</span><span class="wam-kpi-value" id="k-value_7">—</span><span class="wam-kpi-sub" id="k-value_7-sub">&nbsp;</span></div>
-    <div class="wam-kpi wam-kpi-roas" data-k="roas_7"><span class="wam-kpi-label">ROAS · last 7 days</span><span class="wam-kpi-value" id="k-roas_7">—</span><span class="wam-kpi-sub">All clients blended</span></div>
+    <div class="wam-kpi wam-kpi-roas" data-k="roas_7"><span class="wam-kpi-label">ROAS · last 7 days</span><span class="wam-kpi-value" id="k-roas_7">—</span><span class="wam-kpi-sub">Ecom clients blended</span></div>
     <div class="wam-kpi" style="--k:#8b5cf6"><span class="wam-kpi-label">Spend · last 30 days</span><span class="wam-kpi-value" id="k-spend_30">—</span><span class="wam-kpi-sub" id="k-spend_30-sub">&nbsp;</span></div>
-    <div class="wam-kpi wam-kpi-roas" data-k="roas_30"><span class="wam-kpi-label">ROAS · last 30 days</span><span class="wam-kpi-value" id="k-roas_30">—</span><span class="wam-kpi-sub">All clients blended</span></div>
+    <div class="wam-kpi wam-kpi-roas" data-k="roas_30"><span class="wam-kpi-label">ROAS · last 30 days</span><span class="wam-kpi-value" id="k-roas_30">—</span><span class="wam-kpi-sub">Ecom clients blended</span></div>
   </section>
 
   <section class="wam-card">
@@ -195,8 +197,8 @@
       <li>Every campaign that spent money in the last 30 days is listed under its client. Active campaigns come first (green dot), then paused ones.</li>
       <li>ROAS is Meta's purchase conversion value divided by spend for the same period, using each campaign's own attribution setting. Green is at or above the target, red is below it. "No sales" means money was spent but no purchase value was recorded. A dash means nothing was spent.</li>
       <li>Last 7 and last 30 days end yesterday in each account's time zone. Overall is the whole life of the campaign (or the account, on the client header) and includes today so far.</li>
-      <li>Worksport and Swift are billed in Canadian dollars, the others in US dollars. Each client shows its own currency. The blended ROAS at the top adds sales value and spend across both currencies without converting them, so treat it as a rough guide.</li>
-      <li>Swift runs lead and traffic campaigns, so it has no purchase value and shows "No sales".</li>
+      <li>Worksport and Swift are billed in Canadian dollars, the others in US dollars. Each client shows its own currency. The blended ROAS at the top adds Worksport's CAD to the USD clients without converting them, so treat it as a rough guide.</li>
+      <li>Swift runs lead campaigns, so its box shows cost per lead (spend divided by Meta's Leads count) instead of ROAS, and it is left out of the totals at the top. "No leads" means money was spent but no leads were recorded.</li>
     </ul>
   </details>
 </div>
@@ -215,10 +217,16 @@
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
   const when = (iso) => new Date(iso).toLocaleString('en-US', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' Manila time';
 
-  function roasNode(r, spend) {
-    const t = roasText(r, spend);
+  let CPL_TARGET = null;
+  const isCpl = (c) => c.metric === 'cpl';
+  const mText = (c, v, spend) => (isCpl(c) ? (v == null ? (spend > 0 ? 'No leads' : '–') : m2(c.currency, v)) : roasText(v, spend));
+  const mStatus = (c, v, spend) => (isCpl(c) ? (v == null ? (spend > 0 ? 'bad' : '') : (CPL_TARGET == null ? '' : (v <= CPL_TARGET ? 'good' : 'bad'))) : status(v, spend));
+  const mName = (c) => (isCpl(c) ? 'CPL' : 'ROAS');
+  function mNode(c, v, spend) {
+    const t = mText(c, v, spend);
     if (t === '–') return el('span', 'wam-zero', '–');
-    return el('span', 'wam-pill ' + status(r, spend), t);
+    const st = mStatus(c, v, spend);
+    return el('span', 'wam-pill ' + (st || 'plain'), t);
   }
 
   function chart(clients) {
@@ -235,9 +243,9 @@
       mk('rect', { x: pad, y: y, width: bw, height: 28, rx: 14, fill: 'currentColor', opacity: 0.08 });
       mk('rect', { x: pad, y: y, width: Math.max(4, bw * c.totals.spend_7 / max), height: 28, rx: 14, fill: c.color });
       mk('text', { x: pad + bw + 12, y: y + 19, fill: 'currentColor', 'font-weight': 700 }).textContent = m0(c.currency, c.totals.spend_7);
-      const st = status(c.totals.roas_7, c.totals.spend_7);
+      const st = mStatus(c, c.totals[c.metric + '_7'], c.totals.spend_7);
       mk('text', { x: pad + bw + 150, y: y + 19, fill: st === 'good' ? '#16a34a' : st === 'bad' ? '#dc2626' : 'currentColor', 'font-weight': 700 })
-        .textContent = roasText(c.totals.roas_7, c.totals.spend_7) + (c.totals.roas_7 > 0 ? ' ROAS' : '');
+        .textContent = mText(c, c.totals[c.metric + '_7'], c.totals.spend_7) + (c.totals[c.metric + '_7'] > 0 ? ' ' + mName(c) : '');
     });
     $('chart').replaceChildren(svg);
   }
@@ -254,14 +262,16 @@
     id.append(nm);
     const chips = el('div', 'wam-chips');
     const t = c.totals;
-    [['7d spend', pre(c.currency) + m2(c.currency, t.spend_7), ''], ['7d ROAS', roasText(t.roas_7, t.spend_7), status(t.roas_7, t.spend_7)],
-     ['30d spend', m0(c.currency, t.spend_30), ''], ['30d ROAS', roasText(t.roas_30, t.spend_30), status(t.roas_30, t.spend_30)],
-     ['Overall ROAS', roasText(t.roas_all, t.spend_all), status(t.roas_all, t.spend_all)]]
+    const k = c.metric, nmM = mName(c);
+    [['7d spend', pre(c.currency) + m2(c.currency, t.spend_7), ''], ['7d ' + nmM, mText(c, t[k + '_7'], t.spend_7), mStatus(c, t[k + '_7'], t.spend_7)],
+     ['30d spend', m0(c.currency, t.spend_30), ''], ['30d ' + nmM, mText(c, t[k + '_30'], t.spend_30), mStatus(c, t[k + '_30'], t.spend_30)],
+     ['Overall ' + nmM, mText(c, t[k + '_all'], t.spend_all), mStatus(c, t[k + '_all'], t.spend_all)]]
+      .concat(isCpl(c) ? [['30d leads', String(t.leads_30), '']] : [])
       .forEach(([l, v, st]) => { const ch = el('div', 'wam-chip ' + st); ch.append(el('span', null, l), el('b', null, v)); chips.append(ch); });
     head.append(id, chips);
     const wrap = el('div', 'wam-tablewrap');
     const tb0 = el('table', 'wam-table');
-    tb0.innerHTML = '<thead><tr><th></th><th></th><th colspan="3" class="wam-group wam-sep"><span>Spend</span></th><th colspan="3" class="wam-group wam-sep"><span>ROAS</span></th></tr>' +
+    tb0.innerHTML = '<thead><tr><th></th><th></th><th colspan="3" class="wam-group wam-sep"><span>Spend</span></th><th colspan="3" class="wam-group wam-sep"><span>' + (isCpl(c) ? 'Cost per lead' : 'ROAS') + '</span></th></tr>' +
       '<tr><th scope="col">Manager</th><th scope="col">Campaign</th><th class="wam-sep" scope="col">Overall</th><th scope="col">Last 30 days</th><th scope="col">Last 7 days</th><th class="wam-sep" scope="col">Overall</th><th scope="col">Last 30 days</th><th scope="col">Last 7 days</th></tr></thead>';
     const tb = el('tbody');
     if (!c.rows.length) { const tr = el('tr'); const td = el('td', 'wam-na', 'No campaigns spent in the last 30 days.'); td.colSpan = 8; tr.append(td); tb.append(tr); }
@@ -271,10 +281,10 @@
       const tdC = el('td', 'wam-camp');
       tdC.append(el('span', 'st' + (r.active ? ' on' : '')), document.createTextNode(r.campaign), el('small', null, r.active ? 'Active' : 'Paused'));
       tr.append(tdC);
-      [['spend_all', 'm'], ['spend_30', 'm'], ['spend_7', 'm'], ['roas_all', 'r'], ['roas_30', 'r'], ['roas_7', 'r']].forEach(([f, k], i) => {
+      [['spend_all', 'm'], ['spend_30', 'm'], ['spend_7', 'm'], [c.metric + '_all', 'r'], [c.metric + '_30', 'r'], [c.metric + '_7', 'r']].forEach(([f, k], i) => {
         const td = el('td'); if (i === 0 || i === 3) td.classList.add('wam-sep');
         if (k === 'm') { td.append(el('span', 'wam-money', m2(c.currency, r[f] || 0))); if (!r[f]) td.classList.add('wam-zero'); }
-        else td.append(roasNode(r[f], r[f.replace('roas', 'spend')]));
+        else td.append(mNode(c, r[f], r[f.replace(c.metric, 'spend')]));
         tr.append(td);
       });
       tb.append(tr);
@@ -284,7 +294,7 @@
   }
 
   function render(d) {
-    TARGET = d.target || 2;
+    TARGET = d.target || 2; CPL_TARGET = d.cpl_target == null ? null : d.cpl_target;
     $('lg-good').textContent = rx(TARGET) + ' or more';
     $('lg-bad').textContent = 'Under ' + rx(TARGET);
     $('stamp').textContent = 'Updated ' + when(d.generated_at);
@@ -298,8 +308,10 @@
     const lede = $('lede'); lede.replaceChildren();
     const b = (s) => el('b', null, s);
     const sp = both('spend_7'), sv = both('value_7');
-    lede.append('In the last 7 days ', b(d.manager), ' spent ', b(sp.join(' + ')), ' across ', b(String(t.clients)), ' clients and brought in ', b(sv.join(' + ')),
+    lede.append('In the last 7 days ', b(d.manager), ' spent ', b(sp.join(' + ')), ' across ', b(String(t.clients)), ' ecom clients and brought in ', b(sv.join(' + ')),
       ' in sales' + (t.roas_7 ? ', a blended ' : '.'), ...(t.roas_7 ? [b(rx(t.roas_7) + ' ROAS'), t.roas_7 >= TARGET ? ', on target.' : ', below the target.'] : []));
+    const leadC = d.clients.filter(isCpl);
+    if (leadC.length) lede.append(' ' + leadC.map((c) => c.label).join(', ') + ' runs lead campaigns and is tracked on cost per lead in its own box below.');
     chart(d.clients);
     const tabs = $('tabs'); tabs.replaceChildren();
     const mkTab = (key, label, color) => { const bt = el('button', 'wam-tab'); bt.dataset.tab = key; if (color) { bt.style.setProperty('--c', color); bt.append(el('span', 'dot')); } bt.append(label); bt.addEventListener('click', () => { show(key); history.replaceState(null, '', '#' + key); }); tabs.append(bt); };

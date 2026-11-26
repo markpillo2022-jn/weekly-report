@@ -1,12 +1,14 @@
 {
- "generated_at": "2026-11-26T21:14:59+00:00",
+ "generated_at": "2026-11-26T21:18:16+00:00",
  "target": 2.0,
+ "cpl_target": null,
  "manager": "Mark Pilio",
  "clients": [
   {
    "key": "sertodo",
    "label": "Sertodo",
    "color": "#b45309",
+   "metric": "roas",
    "currency": "USD",
    "timezone": "America/Chicago",
    "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=228883631797537",
@@ -18,9 +20,9 @@
     "roas_all": 3.91,
     "spend_30": 23438.97,
     "value_30": 173186.07,
+    "roas_30": 7.39,
     "spend_7": 7950.03,
     "value_7": 92131.6,
-    "roas_30": 7.39,
     "roas_7": 11.59
    },
    "rows": [
@@ -186,6 +188,7 @@
    "key": "olivea",
    "label": "Olivea",
    "color": "#16a34a",
+   "metric": "roas",
    "currency": "USD",
    "timezone": "America/New_York",
    "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=262537100164817",
@@ -197,9 +200,9 @@
     "roas_all": 1.38,
     "spend_30": 55943.11,
     "value_30": 86587.94,
+    "roas_30": 1.55,
     "spend_7": 14536.59,
     "value_7": 18764.23,
-    "roas_30": 1.55,
     "roas_7": 1.29
    },
    "rows": [
@@ -417,6 +420,7 @@
    "key": "worksport",
    "label": "Worksport",
    "color": "#2563eb",
+   "metric": "roas",
    "currency": "CAD",
    "timezone": "America/Toronto",
    "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=245358764356271",
@@ -428,9 +432,9 @@
     "roas_all": 6.03,
     "spend_30": 371497.31,
     "value_30": 1226787.22,
+    "roas_30": 3.3,
     "spend_7": 146966.87,
     "value_7": 420491.41,
-    "roas_30": 3.3,
     "roas_7": 2.86
    },
    "rows": [
@@ -791,6 +795,7 @@
    "key": "plantpress",
    "label": "Plant Press",
    "color": "#0ea5a4",
+   "metric": "roas",
    "currency": "USD",
    "timezone": "America/New_York",
    "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=522572122165502",
@@ -802,9 +807,9 @@
     "roas_all": 0.09,
     "spend_30": 2268.73,
     "value_30": 257.31,
+    "roas_30": 0.11,
     "spend_7": 639.58,
     "value_7": 37.4,
-    "roas_30": 0.11,
     "roas_7": 0.06
    },
    "rows": [
@@ -866,145 +871,146 @@
    "key": "swift",
    "label": "Swift",
    "color": "#8b5cf6",
+   "metric": "cpl",
    "currency": "CAD",
    "timezone": "America/Toronto",
    "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=753094249471045",
    "totals": {
     "campaigns": 9,
     "active": 5,
-    "spend_all": 216525.01,
-    "value_all": 2725.85,
-    "roas_all": 0.01,
+    "spend_all": 216525.41,
+    "leads_all": 1230,
+    "cpl_all": 176.04,
     "spend_30": 11013.5,
-    "value_30": 0.0,
+    "leads_30": 24,
+    "cpl_30": 458.9,
     "spend_7": 2213.22,
-    "value_7": 0.0,
-    "roas_30": 0.0,
-    "roas_7": 0.0
+    "leads_7": 4,
+    "cpl_7": 553.3
    },
    "rows": [
     {
      "campaign": "Leads | Baseball | Cold | Oct",
      "active": true,
      "spend_all": 10621.25,
-     "value_all": 0.0,
-     "roas_all": 0.0,
+     "leads_all": 19,
+     "cpl_all": 559.01,
      "spend_30": 6897.52,
-     "value_30": 0.0,
-     "roas_30": 0.0,
+     "leads_30": 15,
+     "cpl_30": 459.83,
      "spend_7": 1444.32,
-     "value_7": 0.0,
-     "roas_7": 0.0
+     "leads_7": 1,
+     "cpl_7": 1444.32
     },
     {
      "campaign": "Leads | Blogs & Articles | Cold | Oct21",
      "active": true,
      "spend_all": 1913.16,
-     "value_all": 0.0,
-     "roas_all": 0.0,
+     "leads_all": 5,
+     "cpl_all": 382.63,
      "spend_30": 1532.64,
-     "value_30": 0.0,
-     "roas_30": 0.0,
+     "leads_30": 4,
+     "cpl_30": 383.16,
      "spend_7": 338.98,
-     "value_7": 0.0,
-     "roas_7": 0.0
+     "leads_7": 2,
+     "cpl_7": 169.49
     },
     {
      "campaign": "Master Retargeting",
      "active": true,
      "spend_all": 7320.33,
-     "value_all": 0.0,
-     "roas_all": 0.0,
+     "leads_all": 38,
+     "cpl_all": 192.64,
      "spend_30": 593.93,
-     "value_30": 0.0,
-     "roas_30": 0.0,
+     "leads_30": 3,
+     "cpl_30": 197.98,
      "spend_7": 227.88,
-     "value_7": 0.0,
-     "roas_7": 0.0
+     "leads_7": 1,
+     "cpl_7": 227.88
     },
     {
      "campaign": "Traffic | ABCA Webinar (Dec 2) | Nov",
      "active": true,
      "spend_all": 504.3,
-     "value_all": 0.0,
-     "roas_all": 0.0,
+     "leads_all": 0,
+     "cpl_all": null,
      "spend_30": 499.65,
-     "value_30": 0.0,
-     "roas_30": 0.0,
+     "leads_30": 0,
+     "cpl_30": null,
      "spend_7": 142.47,
-     "value_7": 0.0,
-     "roas_7": 0.0
+     "leads_7": 0,
+     "cpl_7": null
     },
     {
      "campaign": "Leads | Lead Magnet Strategy | Rebuild | Nov24",
      "active": true,
      "spend_all": 72.24,
-     "value_all": 0.0,
-     "roas_all": 0.0,
+     "leads_all": 1,
+     "cpl_all": 72.24,
      "spend_30": 59.57,
-     "value_30": 0.0,
-     "roas_30": 0.0,
+     "leads_30": 0,
+     "cpl_30": null,
      "spend_7": 59.57,
-     "value_7": 0.0,
-     "roas_7": 0.0
+     "leads_7": 0,
+     "cpl_7": null
     },
     {
      "campaign": "Leads | Golf Simulators | Cold | Oct",
      "active": false,
      "spend_all": 787.88,
-     "value_all": 0.0,
-     "roas_all": 0.0,
+     "leads_all": 2,
+     "cpl_all": 393.94,
      "spend_30": 528.49,
-     "value_30": 0.0,
-     "roas_30": 0.0,
+     "leads_30": 2,
+     "cpl_30": 264.25,
      "spend_7": 0.0,
-     "value_7": 0.0,
-     "roas_7": null
+     "leads_7": 0,
+     "cpl_7": null
     },
     {
      "campaign": "Leads | Baseball Reels | Cold | Oct",
      "active": false,
      "spend_all": 1827.87,
-     "value_all": 0.0,
-     "roas_all": 0.0,
+     "leads_all": 1,
+     "cpl_all": 1827.87,
      "spend_30": 443.18,
-     "value_30": 0.0,
-     "roas_30": 0.0,
+     "leads_30": 0,
+     "cpl_30": null,
      "spend_7": 0.0,
-     "value_7": 0.0,
-     "roas_7": null
+     "leads_7": 0,
+     "cpl_7": null
     },
     {
      "campaign": "Leads | Basketball | Cold | Oct",
      "active": false,
      "spend_all": 1191.34,
-     "value_all": 0.0,
-     "roas_all": 0.0,
+     "leads_all": 1,
+     "cpl_all": 1191.34,
      "spend_30": 430.25,
-     "value_30": 0.0,
-     "roas_30": 0.0,
+     "leads_30": 0,
+     "cpl_30": null,
      "spend_7": 0.0,
-     "value_7": 0.0,
-     "roas_7": null
+     "leads_7": 0,
+     "cpl_7": null
     },
     {
      "campaign": "Lead Magnets | August 26",
      "active": false,
      "spend_all": 1573.8,
-     "value_all": 0.0,
-     "roas_all": 0.0,
+     "leads_all": 1,
+     "cpl_all": 1573.8,
      "spend_30": 28.27,
-     "value_30": 0.0,
-     "roas_30": 0.0,
+     "leads_30": 0,
+     "cpl_30": null,
      "spend_7": 0.0,
-     "value_7": 0.0,
-     "roas_7": null
+     "leads_7": 0,
+     "cpl_7": null
     }
    ]
   }
  ],
  "team": {
-  "clients": 5,
+  "clients": 4,
   "by_currency": {
    "USD": {
     "spend_30": 81650.81,
@@ -1015,15 +1021,15 @@
     "roas_7": 4.8
    },
    "CAD": {
-    "spend_30": 382510.81,
+    "spend_30": 371497.31,
     "value_30": 1226787.22,
-    "spend_7": 149180.09,
+    "spend_7": 146966.87,
     "value_7": 420491.41,
-    "roas_30": 3.21,
-    "roas_7": 2.82
+    "roas_30": 3.3,
+    "roas_7": 2.86
    }
   },
-  "roas_7": 3.08,
-  "roas_30": 3.2
+  "roas_7": 3.12,
+  "roas_30": 3.28
  }
 }
