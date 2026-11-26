@@ -1,6 +1,6 @@
 # Nightly update of the Fresh Fuel ROAS dashboard
 
-Runs every night at 12:01 AM US Central (America/Chicago), the latest ad account time zone, so every account has passed midnight. Can also be run by hand to refresh on demand. Read-only on the ad accounts: never change a campaign, ad set or budget.
+Runs every 6 hours: 12:01 AM, 6:01 AM, 12:01 PM and 6:01 PM US Central (America/Chicago). The midnight run comes after midnight in every ad account time zone. Can also be run by hand to refresh on demand. Read-only on the ad accounts: never change a campaign, ad set or budget.
 
 1. Make a temp folder RAW. For each client in `fresh-fuel/tools/clients.json` (ad account id `act`), call Meta MCP `ads_get_ad_entities`
    and save the whole answer (or {"error": "<message>"} on failure). Common args: reporting_purpose ["metric_lookup"],
