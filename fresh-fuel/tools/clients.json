@@ -1,0 +1,7 @@
+[
+ {"key": "sertodo", "label": "Sertodo", "act": "228883631797537", "currency": "USD", "timezone": "America/Chicago", "metric": "roas", "target": 4.0, "color": "#b45309"},
+ {"key": "olivea", "label": "Olivea", "act": "262537100164817", "currency": "USD", "timezone": "America/New_York", "metric": "roas", "target": 1.8, "color": "#16a34a"},
+ {"key": "worksport", "label": "Worksport", "act": "245358764356271", "currency": "CAD", "timezone": "America/Toronto", "metric": "roas", "target": 4.0, "color": "#2563eb"},
+ {"key": "plantpress", "label": "Plant Press", "act": "522572122165502", "currency": "USD", "timezone": "America/New_York", "metric": "roas", "target": 1.0, "color": "#0ea5a4"},
+ {"key": "swift", "label": "Swift", "act": "753094249471045", "currency": "CAD", "timezone": "America/Toronto", "metric": "cpl", "target": 100, "color": "#8b5cf6"}
+]
