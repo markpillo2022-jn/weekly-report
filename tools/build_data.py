@@ -19,7 +19,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 MANAGERS = [("danica", "Danica", "#0ea5a4"), ("genesis", "Genesis", "#f97316"),
             ("marge", "Marge", "#8b5cf6"), ("mark", "Mark Pilio", "#2563eb")]
 TARGET = 140
-JN = re.compile(r"\bJNM?\s*[-|:]?\s*conversions?\b", re.I)
+JN = re.compile(r"^\s*JN\s+Conversions?\b", re.I)  # name must start with "JN Conversion"
 
 
 def load(path):
