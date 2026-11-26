@@ -142,6 +142,11 @@
   .wam-kpi-sub b { color: var(--color-fg); }
   .wam-charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 18px 28px; }
   .wam-chartcol { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .wam-camplink { color: inherit; text-decoration: none; border-bottom: 1.5px solid color-mix(in srgb, currentColor 25%, transparent); }
+  .wam-camplink:hover, .wam-camplink:focus-visible { color: #2563eb; border-bottom-color: #2563eb; }
+  .wam-camplink::after { content: " \2197"; font-size: .8em; opacity: .5; }
+  .wam-svglink text { text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); text-underline-offset: 3px; }
+  .wam-svglink:hover text, .wam-svglink:focus-visible text { fill: #2563eb; }
   .wam-h3 { margin: 0; font-size: 14px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--color-fg-muted); }
   .wam-pill.plain { color: var(--color-fg); background: color-mix(in srgb, var(--color-fg) 8%, var(--color-panel)); }
   .wam-pill.plain::before { display: none; }
@@ -236,7 +241,9 @@
     clients.forEach((c, i) => {
       const y = i * rowH + 8;
       const mk = (t, a) => { const n = document.createElementNS(ns, t); Object.entries(a).forEach(([k, v]) => n.setAttribute(k, v)); svg.append(n); return n; };
-      mk('text', { x: 0, y: y + 19, fill: 'currentColor', 'font-weight': 700, 'font-size': 15 }).textContent = c.label;
+      const link = mk('a', { href: c.ads_url, target: '_blank', rel: 'noopener noreferrer', class: 'wam-svglink' });
+      const lt = document.createElementNS(ns, 'text'); lt.setAttribute('x', 0); lt.setAttribute('y', y + 19); lt.setAttribute('fill', 'currentColor'); lt.setAttribute('font-weight', 700); lt.setAttribute('font-size', 15); lt.setAttribute('text-decoration', 'underline'); lt.textContent = c.label;
+      const tt = document.createElementNS(ns, 'title'); tt.textContent = 'Open ' + c.label + ' in Meta Ads Manager'; link.append(tt, lt);
       const bw = W - pad - 236;
       mk('rect', { x: pad, y: y, width: bw, height: 28, rx: 14, fill: 'currentColor', opacity: 0.08 });
       mk('rect', { x: pad, y: y, width: Math.max(4, bw * (c.totals['spend_' + p] || 0) / max), height: 28, rx: 14, fill: c.color });
@@ -278,7 +285,9 @@
     c.rows.forEach((r) => {
       const tr = el('tr');
       const tdC = el('td', 'wam-camp');
-      tdC.append(el('span', 'st' + (r.active ? ' on' : '')), document.createTextNode(r.campaign), el('small', null, r.active ? 'Active' : 'Paused'));
+      let nmEl = document.createTextNode(r.campaign);
+      if (r.ads_url) { nmEl = el('a', 'wam-camplink', r.campaign); nmEl.href = r.ads_url; nmEl.target = '_blank'; nmEl.rel = 'noopener noreferrer'; nmEl.title = 'Open this campaign in Meta Ads Manager'; }
+      tdC.append(el('span', 'st' + (r.active ? ' on' : '')), nmEl, el('small', null, r.active ? 'Active' : 'Paused'));
       tr.append(tdC);
       P.map((p) => ['spend_' + p, 'm']).concat(P.map((p) => [c.metric + '_' + p, 'r'])).forEach(([f, k], i) => {
         const td = el('td'); if (i === 0 || i === 4) td.classList.add('wam-sep');

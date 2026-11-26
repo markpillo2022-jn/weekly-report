@@ -79,6 +79,7 @@ def main(raw, out_path):
             vals = {"all": (num(le.get("amount_spent")), num(le.get(field))), "30": (num(e.get("amount_spent")), num(e.get(field))),
                     "14": (num(s14e.get("amount_spent")), num(s14e.get(field))), "7": (num(s7e.get("amount_spent")), num(s7e.get(field)))}
             r = dict(campaign=e.get("name", ""), active=le.get("effective_status") == "ACTIVE")
+            r["ads_url"] = f"https://adsmanager.facebook.com/adsmanager/manage/adsets?act={act}&selected_campaign_ids={i}"
             for p, (s, v) in vals.items():
                 r[f"spend_{p}"] = r2(s); r[f"{V}_{p}"] = int(v) if V == "leads" else r2(v); r[f"{m}_{p}"] = ratio(m, s, v)
             rows.append(r)
