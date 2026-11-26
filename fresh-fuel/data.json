@@ -1,7 +1,5 @@
 {
- "generated_at": "2026-11-26T21:18:16+00:00",
- "target": 2.0,
- "cpl_target": null,
+ "generated_at": "2026-11-26T21:21:24+00:00",
  "manager": "Mark Pilio",
  "clients": [
   {
@@ -9,6 +7,7 @@
    "label": "Sertodo",
    "color": "#b45309",
    "metric": "roas",
+   "target": 4.0,
    "currency": "USD",
    "timezone": "America/Chicago",
    "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=228883631797537",
@@ -189,6 +188,7 @@
    "label": "Olivea",
    "color": "#16a34a",
    "metric": "roas",
+   "target": 1.8,
    "currency": "USD",
    "timezone": "America/New_York",
    "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=262537100164817",
@@ -421,6 +421,7 @@
    "label": "Worksport",
    "color": "#2563eb",
    "metric": "roas",
+   "target": 4.0,
    "currency": "CAD",
    "timezone": "America/Toronto",
    "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=245358764356271",
@@ -796,6 +797,7 @@
    "label": "Plant Press",
    "color": "#0ea5a4",
    "metric": "roas",
+   "target": 1.0,
    "currency": "USD",
    "timezone": "America/New_York",
    "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=522572122165502",
@@ -872,6 +874,7 @@
    "label": "Swift",
    "color": "#8b5cf6",
    "metric": "cpl",
+   "target": 100,
    "currency": "CAD",
    "timezone": "America/Toronto",
    "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=753094249471045",

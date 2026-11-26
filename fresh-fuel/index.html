@@ -167,10 +167,9 @@
   </header>
 
   <div class="wam-legend">
-    <strong>ROAS target:</strong>
-    <span class="wam-pill good" id="lg-good">—</span>
-    <span class="wam-pill bad" id="lg-bad">—</span>
-    <span>"No sales" with spend counts as under target.</span>
+    <strong>Targets:</strong>
+    <span id="lg" style="display:contents"></span>
+    <span>Green meets the client's target, red misses it. "No sales" or "No leads" with spend counts as a miss.</span>
   </div>
 
   <section class="wam-kpis" aria-label="Totals">
@@ -195,8 +194,9 @@
     <ul>
       <li>Each client is one Meta ad account. All of them are managed by Mark Pilio.</li>
       <li>Every campaign that spent money in the last 30 days is listed under its client. Active campaigns come first (green dot), then paused ones.</li>
-      <li>ROAS is Meta's purchase conversion value divided by spend for the same period, using each campaign's own attribution setting. Green is at or above the target, red is below it. "No sales" means money was spent but no purchase value was recorded. A dash means nothing was spent.</li>
+      <li>ROAS is Meta's purchase conversion value divided by spend for the same period, using each campaign's own attribution setting. Each client has its own target, shown in its header and at the top. Green meets it, red misses it. "No sales" means money was spent but no purchase value was recorded. A dash means nothing was spent.</li>
       <li>Last 7 and last 30 days end yesterday in each account's time zone. Overall is the whole life of the campaign (or the account, on the client header) and includes today so far.</li>
+      <li>The blended ROAS at the top has no single target, so it isn't colored.</li>
       <li>Worksport and Swift are billed in Canadian dollars, the others in US dollars. Each client shows its own currency. The blended ROAS at the top adds Worksport's CAD to the USD clients without converting them, so treat it as a rough guide.</li>
       <li>Swift runs lead campaigns, so its box shows cost per lead (spend divided by Meta's Leads count) instead of ROAS, and it is left out of the totals at the top. "No leads" means money was spent but no leads were recorded.</li>
     </ul>
@@ -210,18 +210,17 @@
   const pre = (cur) => (cur === 'CAD' ? 'CA' : cur === 'USD' ? 'US' : '');
   const m0 = (cur, v) => pre(cur) + money(cur, v, 0);
   const m2 = (cur, v) => money(cur, v, 2);
-  let TARGET = 2;
   const rx = (v) => v.toFixed(2) + 'x';
-  const status = (r, spend) => (r == null ? '' : (r > 0 ? (r >= TARGET ? 'good' : 'bad') : (spend > 0 ? 'bad' : '')));
+  const status = (r, spend, tgt) => (r == null || tgt == null ? '' : (r > 0 ? (r >= tgt ? 'good' : 'bad') : (spend > 0 ? 'bad' : '')));
   const roasText = (r, spend) => (r == null || (!(r > 0) && !(spend > 0)) ? '–' : (r > 0 ? rx(r) : 'No sales'));
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
   const when = (iso) => new Date(iso).toLocaleString('en-US', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' Manila time';
 
-  let CPL_TARGET = null;
   const isCpl = (c) => c.metric === 'cpl';
   const mText = (c, v, spend) => (isCpl(c) ? (v == null ? (spend > 0 ? 'No leads' : '–') : m2(c.currency, v)) : roasText(v, spend));
-  const mStatus = (c, v, spend) => (isCpl(c) ? (v == null ? (spend > 0 ? 'bad' : '') : (CPL_TARGET == null ? '' : (v <= CPL_TARGET ? 'good' : 'bad'))) : status(v, spend));
+  const mStatus = (c, v, spend) => (isCpl(c) ? (v == null ? (spend > 0 ? 'bad' : '') : (c.target == null ? '' : (v <= c.target ? 'good' : 'bad'))) : status(v, spend, c.target));
   const mName = (c) => (isCpl(c) ? 'CPL' : 'ROAS');
+  const tgtText = (c) => (c.target == null ? 'no target' : (isCpl(c) ? pre(c.currency) + m2(c.currency, c.target) + ' CPL or less' : rx(c.target) + ' ROAS or more'));
   function mNode(c, v, spend) {
     const t = mText(c, v, spend);
     if (t === '–') return el('span', 'wam-zero', '–');
@@ -258,7 +257,7 @@
     const nm = el('div');
     const h = el('h2', 'wam-mgr-name');
     const a = el('a', null, c.label); a.href = c.ads_url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.title = 'Open in Meta Ads Manager'; h.append(a);
-    nm.append(h, el('span', 'wam-mgr-count', c.totals.campaigns + ' campaigns · ' + c.totals.active + ' active · ' + c.currency), el('span', 'wam-mgrline', 'Account manager: ' + manager));
+    nm.append(h, el('span', 'wam-mgr-count', c.totals.campaigns + ' campaigns · ' + c.totals.active + ' active · ' + c.currency), el('span', 'wam-mgrline', 'Account manager: ' + manager + ' · Target: ' + tgtText(c)));
     id.append(nm);
     const chips = el('div', 'wam-chips');
     const t = c.totals;
@@ -294,9 +293,8 @@
   }
 
   function render(d) {
-    TARGET = d.target || 2; CPL_TARGET = d.cpl_target == null ? null : d.cpl_target;
-    $('lg-good').textContent = rx(TARGET) + ' or more';
-    $('lg-bad').textContent = 'Under ' + rx(TARGET);
+    const lg = $('lg'); lg.replaceChildren();
+    d.clients.forEach((c) => { const sp = el('span', 'wam-pill plain', c.label + ' ' + (c.target == null ? '–' : isCpl(c) ? pre(c.currency) + m0(c.currency, c.target).replace(pre(c.currency), '') + ' CPL' : rx(c.target))); lg.append(sp); });
     $('stamp').textContent = 'Updated ' + when(d.generated_at);
     const t = d.team, bc = t.by_currency, curs = Object.keys(bc);
     const both = (k) => curs.map((c) => m0(c, bc[c][k]));
@@ -304,12 +302,13 @@
     ['spend_7', 'value_7', 'spend_30'].forEach(setPair);
     $('k-roas_7').textContent = t.roas_7 ? rx(t.roas_7) : '–';
     $('k-roas_30').textContent = t.roas_30 ? rx(t.roas_30) : '–';
-    document.querySelectorAll('.wam-kpi-roas').forEach((c) => { const st = status(t[c.dataset.k], 1); c.classList.toggle('good', st === 'good'); c.classList.toggle('bad', st === 'bad'); });
     const lede = $('lede'); lede.replaceChildren();
     const b = (s) => el('b', null, s);
     const sp = both('spend_7'), sv = both('value_7');
     lede.append('In the last 7 days ', b(d.manager), ' spent ', b(sp.join(' + ')), ' across ', b(String(t.clients)), ' ecom clients and brought in ', b(sv.join(' + ')),
-      ' in sales' + (t.roas_7 ? ', a blended ' : '.'), ...(t.roas_7 ? [b(rx(t.roas_7) + ' ROAS'), t.roas_7 >= TARGET ? ', on target.' : ', below the target.'] : []));
+      ' in sales' + (t.roas_7 ? ', a blended ' : '.'), ...(t.roas_7 ? [b(rx(t.roas_7) + ' ROAS'), '.'] : []));
+    const hit = d.clients.filter((c) => mStatus(c, c.totals[c.metric + '_7'], c.totals.spend_7) === 'good').map((c) => c.label);
+    lede.append(' ', b(hit.length + ' of ' + d.clients.length), ' clients hit their target this week' + (hit.length ? ' (' + hit.join(', ') + ').' : '.'));
     const leadC = d.clients.filter(isCpl);
     if (leadC.length) lede.append(' ' + leadC.map((c) => c.label).join(', ') + ' runs lead campaigns and is tracked on cost per lead in its own box below.');
     chart(d.clients);
