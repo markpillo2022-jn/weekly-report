@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Fresh Fuel ROAS Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #f4f6fb; --color-panel: #ffffff; --color-fg: #0f172a; --color-fg-muted: #5b6477; --color-border-line: #e2e6ef;
+    --font-anthropic-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --color-bg: #0b1220; --color-panel: #121a2b; --color-fg: #e8ecf5; --color-fg-muted: #9aa4b8; --color-border-line: #26304a; color-scheme: dark; }
+  }
+  html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); font-family: var(--font-anthropic-sans); -webkit-font-smoothing: antialiased; }
+  .page { max-width: 1280px; margin: 0 auto; padding: 24px 16px 48px; }
+  .wam-chart svg { display: block; width: 100%; height: auto; }
+  .wam-view { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 8px 14px; border-radius: 999px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.3); color: #fff; }
+  .wam-error { padding: 24px; border-radius: 18px; background: var(--wam-bad-bg, #fee2e2); color: #991b1b; font-weight: 600; }
+  .wam-acct .wam-typed { color: #b45309; font-weight: 600; }
+
+  /* Layout: bold gradient hero, KPI tiles, colored manager boards with large readable tables. */
+  .wam {
+    --wam-good: #16a34a; --wam-good-bg: color-mix(in srgb, #22c55e 18%, var(--color-panel));
+    --wam-bad: #dc2626; --wam-bad-bg: color-mix(in srgb, #ef4444 16%, var(--color-panel));
+    --wam-orange: #f97316; --wam-navy: #0b1f4d;
+    display: flex; flex-direction: column; gap: 28px; font-size: 16px; line-height: 1.5; color: var(--color-fg);
+  }
+  .wam * { box-sizing: border-box; }
+
+  /* Hero */
+  .wam-hero { position: relative; overflow: hidden; border-radius: 22px; padding: 32px 32px 28px; color: #fff;
+    background: radial-gradient(circle at 88% 0%, rgba(249,115,22,.55), transparent 42%), radial-gradient(circle at 0% 100%, rgba(14,165,164,.45), transparent 45%), linear-gradient(135deg, #0b1f4d 0%, #13306f 55%, #1d4ed8 100%);
+    display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px; box-shadow: 0 18px 40px -20px rgba(11,31,77,.6); }
+  .wam-hero-text { min-width: 0; flex: 1 1 420px; }
+  .wam-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #fed7aa; margin: 0 0 10px; }
+  .wam-eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 4px rgba(34,197,94,.25); }
+  .wam-title { font-family: var(--font-anthropic-sans); font-weight: 800; font-size: clamp(28px, 4vw, 42px); line-height: 1.1; letter-spacing: -.02em; margin: 0; text-wrap: balance; color: #fff; }
+  .wam-lede { margin: 12px 0 0; font-size: 18px; color: rgba(255,255,255,.82); max-width: 62ch; }
+  .wam-lede b { color: #fff; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .wam-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+  .wam-stamp { font-size: 14px; color: rgba(255,255,255,.75); font-variant-numeric: tabular-nums; }
+  .wam-refresh { display: inline-flex; align-items: center; gap: 10px; font: inherit; font-size: 17px; font-weight: 700; padding: 12px 24px; border-radius: 999px; border: 0; background: var(--wam-orange); color: #fff; cursor: pointer; box-shadow: 0 10px 24px -8px rgba(249,115,22,.8); transition: transform .15s ease, box-shadow .15s ease; }
+  .wam-refresh:hover { transform: translateY(-1px); box-shadow: 0 14px 28px -8px rgba(249,115,22,.9); }
+  .wam-refresh:focus-visible, .wam-tab:focus-visible { outline: 3px solid #fde68a; outline-offset: 3px; }
+  .wam-refresh svg { width: 18px; height: 18px; }
+  .wam-refresh.is-busy svg { animation: wam-spin 1s linear infinite; }
+  .wam-refresh.is-busy { opacity: .85; }
+  @keyframes wam-spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .wam-refresh.is-busy svg { animation: none; } .wam-refresh { transition: none; } }
+
+  /* Legend */
+  .wam-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; font-size: 15px; color: var(--color-fg-muted); }
+  .wam-legend strong { color: var(--color-fg); }
+  .wam-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .wam-pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .wam-pill.good { color: var(--wam-good); background: var(--wam-good-bg); }
+  .wam-pill.bad { color: var(--wam-bad); background: var(--wam-bad-bg); }
+
+  /* KPIs */
+  .wam-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; }
+  .wam-kpi { position: relative; overflow: hidden; background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: 18px; padding: 20px 22px; display: flex; flex-direction: column; gap: 6px; min-width: 0; box-shadow: 0 8px 24px -18px rgba(15,23,42,.45); }
+  .wam-kpi::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 5px; background: var(--k, #2563eb); }
+  .wam-kpi-label { font-size: 14px; font-weight: 600; color: var(--color-fg-muted); letter-spacing: .03em; }
+  .wam-kpi-value { font-size: clamp(28px, 3vw, 36px); font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1.15; min-height: 1.15em; }
+  .wam-kpi-sub { font-size: 14px; color: var(--color-fg-muted); }
+  .wam-kpi.good { background: var(--wam-good-bg); } .wam-kpi.good .wam-kpi-value { color: var(--wam-good); } .wam-kpi.good::before { background: var(--wam-good); }
+  .wam-kpi.bad { background: var(--wam-bad-bg); } .wam-kpi.bad .wam-kpi-value { color: var(--wam-bad); } .wam-kpi.bad::before { background: var(--wam-bad); }
+
+  /* Chart */
+  .wam-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: 18px; padding: 22px 24px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 8px 24px -18px rgba(15,23,42,.45); }
+  .wam-h2 { font-size: 21px; font-weight: 700; margin: 0; letter-spacing: -.01em; }
+  .wam-chart { position: relative; min-height: 200px; }
+  .wam-chart svg text { font-size: 15px; }
+
+  /* Tabs */
+  .wam-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+  .wam-tab { font: inherit; font-size: 16px; font-weight: 600; padding: 10px 20px; border-radius: 999px; border: 2px solid var(--color-border-line); background: var(--color-panel); color: var(--color-fg); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: background .15s ease; }
+  .wam-tab .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c, var(--color-fg)); }
+  .wam-tab[aria-pressed="true"] { background: var(--c, var(--color-fg)); border-color: var(--c, var(--color-fg)); color: #fff; }
+  .wam-tab[aria-pressed="true"] .dot { background: #fff; }
+  .wam-tab[data-tab="all"][aria-pressed="true"] { background: var(--wam-navy); border-color: var(--wam-navy); }
+
+  /* Manager boards */
+  .wam-mgr { --c: #2563eb; display: flex; flex-direction: column; border-radius: 20px; overflow: hidden; border: 1px solid var(--color-border-line); background: var(--color-panel); box-shadow: 0 12px 30px -22px rgba(15,23,42,.5); }
+  .wam-mgr-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; padding: 20px 24px; color: #fff;
+    background: linear-gradient(120deg, var(--c), color-mix(in srgb, var(--c) 70%, #0b1f4d)); }
+  .wam-mgr-id { display: flex; align-items: center; gap: 14px; min-width: 0; }
+  .wam-avatar { flex: none; width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 20px; background: rgba(255,255,255,.22); border: 2px solid rgba(255,255,255,.55); }
+  .wam-mgr-name { font-size: 26px; font-weight: 800; letter-spacing: -.01em; margin: 0; line-height: 1.15; }
+  .wam-mgr-count { display: block; font-size: 14px; font-weight: 500; color: rgba(255,255,255,.85); }
+  .wam-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .wam-chip { font-size: 14px; padding: 6px 12px; border-radius: 12px; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.3); font-variant-numeric: tabular-nums; display: flex; flex-direction: column; line-height: 1.25; }
+  .wam-chip span { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: rgba(255,255,255,.8); }
+  .wam-chip b { font-size: 17px; font-weight: 800; }
+  .wam-chip.good b, .wam-chip.bad b { display: inline-flex; align-items: center; gap: 6px; }
+  .wam-chip.good b::before, .wam-chip.bad b::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 0 3px rgba(74,222,128,.3); }
+  .wam-chip.bad b::before { background: #fca5a5; box-shadow: 0 0 0 3px rgba(252,165,165,.35); }
+
+  .wam-tablewrap { overflow-x: auto; }
+  .wam-table { width: 100%; border-collapse: collapse; font-size: 16px; font-variant-numeric: tabular-nums; min-width: 860px; }
+  .wam-table th, .wam-table td { padding: 13px 16px; text-align: right; white-space: nowrap; }
+  .wam-table th:nth-child(-n+2), .wam-table td:nth-child(-n+2) { text-align: left; }
+  .wam-table thead th { font-size: 13px; letter-spacing: .07em; text-transform: uppercase; color: var(--color-fg-muted); font-weight: 700; background: color-mix(in srgb, var(--c) 7%, var(--color-panel)); }
+  .wam-table thead tr:first-child th { padding-top: 12px; padding-bottom: 0; }
+  .wam-table .wam-group { text-align: center; color: var(--c); font-size: 14px; }
+  .wam-table .wam-group span { display: block; border-bottom: 3px solid var(--c); padding-bottom: 6px; }
+  .wam-table thead tr:last-child th { border-bottom: 1px solid var(--color-border-line); }
+  .wam-table .wam-sep { border-left: 1px solid var(--color-border-line); }
+  .wam-table tbody td { border-bottom: 1px solid color-mix(in srgb, var(--color-border-line) 70%, transparent); }
+  .wam-table tbody tr:nth-child(even) td { background: color-mix(in srgb, var(--c) 3%, var(--color-panel)); }
+  .wam-table tbody tr:last-child td { border-bottom: none; }
+  .wam-table tbody tr:hover td { background: color-mix(in srgb, var(--c) 9%, var(--color-panel)); }
+  .wam-acct { white-space: normal !important; min-width: 240px; font-weight: 700; font-size: 16.5px; }
+  .wam-acctlink { color: inherit; text-decoration: none; border-bottom: 2px solid color-mix(in srgb, currentColor 25%, transparent); }
+  .wam-acctlink:hover, .wam-acctlink:focus-visible { color: #2563eb; border-bottom-color: #2563eb; }
+  .wam-acctlink::after { content: " \2197"; font-size: 0.8em; opacity: .55; }
+  .wam-acct small { display: block; color: var(--color-fg-muted); font-size: 13.5px; font-weight: 400; margin-top: 3px; }
+  .wam-mgrcell { font-weight: 700; color: var(--c); font-size: 14px; text-transform: uppercase; letter-spacing: .06em; }
+  .wam-money { font-weight: 600; }
+  .wam-na { color: var(--color-fg-muted); font-size: 14px; }
+  td.wam-typedcell { background-image: linear-gradient(color-mix(in srgb, #f59e0b 10%, transparent), color-mix(in srgb, #f59e0b 10%, transparent)); }
+  .wam-err { color: var(--wam-bad); font-weight: 700; }
+  .wam-zero { color: var(--color-fg-muted); }
+  .wam-foot { font-size: 15px; color: var(--color-fg-muted); }
+  .wam-foot summary { cursor: pointer; font-weight: 600; color: var(--color-fg); }
+  .wam-foot ul { margin: 8px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; max-width: 80ch; }
+
+  .wam-camp { white-space: normal !important; min-width: 280px; font-weight: 600; font-size: 15.5px; }
+  .wam-camp .st { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; background: var(--color-fg-muted); opacity: .5; }
+  .wam-camp .st.on { background: var(--wam-good); opacity: 1; box-shadow: 0 0 0 3px color-mix(in srgb, var(--wam-good) 25%, transparent); }
+  .wam-camp small { display: block; color: var(--color-fg-muted); font-size: 12.5px; font-weight: 500; margin-top: 2px; text-transform: uppercase; letter-spacing: .05em; }
+  .wam-mgrline { font-size: 14px; font-weight: 600; color: rgba(255,255,255,.9); }
+  .wam-mgr-name a { color: #fff; text-decoration: none; border-bottom: 2px solid rgba(255,255,255,.35); }
+  .wam-mgr-name a::after { content: " \2197"; font-size: .6em; opacity: .7; }
+  .wam-kpi-sub b { color: var(--color-fg); }
+  @media (prefers-reduced-motion: no-preference) {
+    .wam-kpi, .wam-mgr, .wam-card { animation: wam-rise .5s var(--cds-ease-out, ease-out) both; }
+    .wam-kpis .wam-kpi:nth-child(2) { animation-delay: .05s; } .wam-kpis .wam-kpi:nth-child(3) { animation-delay: .1s; }
+    .wam-kpis .wam-kpi:nth-child(4) { animation-delay: .15s; } .wam-kpis .wam-kpi:nth-child(5) { animation-delay: .2s; }
+  }
+  @keyframes wam-rise { from { transform: translateY(8px); } to { transform: none; } }
+  @media (max-width: 560px) { .wam-hero { padding: 24px 20px; } .wam-actions { align-items: flex-start; } .wam-mgr-head { padding: 16px; } }
+  @media print { .wam-refresh, .wam-tabs { display: none; } .wam-mgr[hidden] { display: flex !important; } }
+</style>
+</head>
+<body>
+<main class="page">
+<div class="wam" id="app">
+  <header class="wam-hero" id="overview">
+    <div class="wam-hero-text">
+      <p class="wam-eyebrow">Fresh Fuel Marketing · Meta ecom accounts</p>
+      <h1 class="wam-title">Weekly ROAS Report</h1>
+      <p class="wam-lede" id="lede">Loading the latest numbers…</p>
+    </div>
+    <div class="wam-actions">
+      <span class="wam-view">View only</span>
+      <span class="wam-stamp" id="stamp"></span>
+    </div>
+  </header>
+
+  <div class="wam-legend">
+    <strong>ROAS target:</strong>
+    <span class="wam-pill good" id="lg-good">—</span>
+    <span class="wam-pill bad" id="lg-bad">—</span>
+    <span>"No sales" with spend counts as under target.</span>
+  </div>
+
+  <section class="wam-kpis" aria-label="Totals">
+    <div class="wam-kpi" style="--k:#2563eb"><span class="wam-kpi-label">Spend · last 7 days</span><span class="wam-kpi-value" id="k-spend_7">—</span><span class="wam-kpi-sub" id="k-spend_7-sub">&nbsp;</span></div>
+    <div class="wam-kpi" style="--k:#0ea5a4"><span class="wam-kpi-label">Sales value · last 7 days</span><span class="wam-kpi-value" id="k-value_7">—</span><span class="wam-kpi-sub" id="k-value_7-sub">&nbsp;</span></div>
+    <div class="wam-kpi wam-kpi-roas" data-k="roas_7"><span class="wam-kpi-label">ROAS · last 7 days</span><span class="wam-kpi-value" id="k-roas_7">—</span><span class="wam-kpi-sub">All clients blended</span></div>
+    <div class="wam-kpi" style="--k:#8b5cf6"><span class="wam-kpi-label">Spend · last 30 days</span><span class="wam-kpi-value" id="k-spend_30">—</span><span class="wam-kpi-sub" id="k-spend_30-sub">&nbsp;</span></div>
+    <div class="wam-kpi wam-kpi-roas" data-k="roas_30"><span class="wam-kpi-label">ROAS · last 30 days</span><span class="wam-kpi-value" id="k-roas_30">—</span><span class="wam-kpi-sub">All clients blended</span></div>
+  </section>
+
+  <section class="wam-card">
+    <h2 class="wam-h2">Last 7 days by client</h2>
+    <div class="wam-chart" id="chart" role="img" aria-label="Last 7 days spend by client, with ROAS colored against the target"></div>
+  </section>
+
+  <nav class="wam-tabs" id="tabs" aria-label="Filter by client"></nav>
+
+  <div id="boards" style="display:flex;flex-direction:column;gap:28px"></div>
+
+  <details class="wam-foot">
+    <summary>How these numbers work</summary>
+    <ul>
+      <li>Each client is one Meta ad account. All of them are managed by Mark Pilio.</li>
+      <li>Every campaign that spent money in the last 30 days is listed under its client. Active campaigns come first (green dot), then paused ones.</li>
+      <li>ROAS is Meta's purchase conversion value divided by spend for the same period, using each campaign's own attribution setting. Green is at or above the target, red is below it. "No sales" means money was spent but no purchase value was recorded. A dash means nothing was spent.</li>
+      <li>Last 7 and last 30 days end yesterday in each account's time zone. Overall is the whole life of the campaign (or the account, on the client header) and includes today so far.</li>
+      <li>Worksport and Swift are billed in Canadian dollars, the others in US dollars. Each client shows its own currency. The blended ROAS at the top adds sales value and spend across both currencies without converting them, so treat it as a rough guide.</li>
+      <li>Swift runs lead and traffic campaigns, so it has no purchase value and shows "No sales".</li>
+    </ul>
+  </details>
+</div>
+</main>
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const money = (cur, v, dp) => new Intl.NumberFormat('en-US', { style: 'currency', currency: cur, currencyDisplay: 'narrowSymbol', minimumFractionDigits: dp, maximumFractionDigits: dp }).format(v);
+  const pre = (cur) => (cur === 'CAD' ? 'CA' : cur === 'USD' ? 'US' : '');
+  const m0 = (cur, v) => pre(cur) + money(cur, v, 0);
+  const m2 = (cur, v) => money(cur, v, 2);
+  let TARGET = 2;
+  const rx = (v) => v.toFixed(2) + 'x';
+  const status = (r, spend) => (r == null ? '' : (r > 0 ? (r >= TARGET ? 'good' : 'bad') : (spend > 0 ? 'bad' : '')));
+  const roasText = (r, spend) => (r == null || (!(r > 0) && !(spend > 0)) ? '–' : (r > 0 ? rx(r) : 'No sales'));
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const when = (iso) => new Date(iso).toLocaleString('en-US', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' Manila time';
+
+  function roasNode(r, spend) {
+    const t = roasText(r, spend);
+    if (t === '–') return el('span', 'wam-zero', '–');
+    return el('span', 'wam-pill ' + status(r, spend), t);
+  }
+
+  function chart(clients) {
+    const W = 900, rowH = 46, pad = 130, H = clients.length * rowH + 10;
+    const max = Math.max(1, ...clients.map((c) => c.totals.spend_7));
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    clients.forEach((c, i) => {
+      const y = i * rowH + 8;
+      const mk = (t, a) => { const n = document.createElementNS(ns, t); Object.entries(a).forEach(([k, v]) => n.setAttribute(k, v)); svg.append(n); return n; };
+      mk('text', { x: 0, y: y + 19, fill: 'currentColor', 'font-weight': 700 }).textContent = c.label;
+      const bw = W - pad - 260;
+      mk('rect', { x: pad, y: y, width: bw, height: 28, rx: 14, fill: 'currentColor', opacity: 0.08 });
+      mk('rect', { x: pad, y: y, width: Math.max(4, bw * c.totals.spend_7 / max), height: 28, rx: 14, fill: c.color });
+      mk('text', { x: pad + bw + 12, y: y + 19, fill: 'currentColor', 'font-weight': 700 }).textContent = m0(c.currency, c.totals.spend_7);
+      const st = status(c.totals.roas_7, c.totals.spend_7);
+      mk('text', { x: pad + bw + 150, y: y + 19, fill: st === 'good' ? '#16a34a' : st === 'bad' ? '#dc2626' : 'currentColor', 'font-weight': 700 })
+        .textContent = roasText(c.totals.roas_7, c.totals.spend_7) + (c.totals.roas_7 > 0 ? ' ROAS' : '');
+    });
+    $('chart').replaceChildren(svg);
+  }
+
+  function board(c, manager) {
+    const sec = el('section', 'wam-mgr'); sec.dataset.mgr = c.key; sec.style.setProperty('--c', c.color);
+    const head = el('div', 'wam-mgr-head');
+    const id = el('div', 'wam-mgr-id');
+    id.append(el('div', 'wam-avatar', c.label[0]));
+    const nm = el('div');
+    const h = el('h2', 'wam-mgr-name');
+    const a = el('a', null, c.label); a.href = c.ads_url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.title = 'Open in Meta Ads Manager'; h.append(a);
+    nm.append(h, el('span', 'wam-mgr-count', c.totals.campaigns + ' campaigns · ' + c.totals.active + ' active · ' + c.currency), el('span', 'wam-mgrline', 'Account manager: ' + manager));
+    id.append(nm);
+    const chips = el('div', 'wam-chips');
+    const t = c.totals;
+    [['7d spend', pre(c.currency) + m2(c.currency, t.spend_7), ''], ['7d ROAS', roasText(t.roas_7, t.spend_7), status(t.roas_7, t.spend_7)],
+     ['30d spend', m0(c.currency, t.spend_30), ''], ['30d ROAS', roasText(t.roas_30, t.spend_30), status(t.roas_30, t.spend_30)],
+     ['Overall ROAS', roasText(t.roas_all, t.spend_all), status(t.roas_all, t.spend_all)]]
+      .forEach(([l, v, st]) => { const ch = el('div', 'wam-chip ' + st); ch.append(el('span', null, l), el('b', null, v)); chips.append(ch); });
+    head.append(id, chips);
+    const wrap = el('div', 'wam-tablewrap');
+    const tb0 = el('table', 'wam-table');
+    tb0.innerHTML = '<thead><tr><th></th><th></th><th colspan="3" class="wam-group wam-sep"><span>Spend</span></th><th colspan="3" class="wam-group wam-sep"><span>ROAS</span></th></tr>' +
+      '<tr><th scope="col">Manager</th><th scope="col">Campaign</th><th class="wam-sep" scope="col">Overall</th><th scope="col">Last 30 days</th><th scope="col">Last 7 days</th><th class="wam-sep" scope="col">Overall</th><th scope="col">Last 30 days</th><th scope="col">Last 7 days</th></tr></thead>';
+    const tb = el('tbody');
+    if (!c.rows.length) { const tr = el('tr'); const td = el('td', 'wam-na', 'No campaigns spent in the last 30 days.'); td.colSpan = 8; tr.append(td); tb.append(tr); }
+    c.rows.forEach((r) => {
+      const tr = el('tr');
+      tr.append(el('td', 'wam-mgrcell', manager));
+      const tdC = el('td', 'wam-camp');
+      tdC.append(el('span', 'st' + (r.active ? ' on' : '')), document.createTextNode(r.campaign), el('small', null, r.active ? 'Active' : 'Paused'));
+      tr.append(tdC);
+      [['spend_all', 'm'], ['spend_30', 'm'], ['spend_7', 'm'], ['roas_all', 'r'], ['roas_30', 'r'], ['roas_7', 'r']].forEach(([f, k], i) => {
+        const td = el('td'); if (i === 0 || i === 3) td.classList.add('wam-sep');
+        if (k === 'm') { td.append(el('span', 'wam-money', m2(c.currency, r[f] || 0))); if (!r[f]) td.classList.add('wam-zero'); }
+        else td.append(roasNode(r[f], r[f.replace('roas', 'spend')]));
+        tr.append(td);
+      });
+      tb.append(tr);
+    });
+    tb0.append(tb); wrap.append(tb0); sec.append(head, wrap);
+    return sec;
+  }
+
+  function render(d) {
+    TARGET = d.target || 2;
+    $('lg-good').textContent = rx(TARGET) + ' or more';
+    $('lg-bad').textContent = 'Under ' + rx(TARGET);
+    $('stamp').textContent = 'Updated ' + when(d.generated_at);
+    const t = d.team, bc = t.by_currency, curs = Object.keys(bc);
+    const both = (k) => curs.map((c) => m0(c, bc[c][k]));
+    const setPair = (k) => { const v = both(k); $('k-' + k).textContent = v[0] || '–'; const s = $('k-' + k + '-sub'); s.replaceChildren(); if (v.length > 1) s.append('+ ', el('b', null, v.slice(1).join(' + '))); };
+    ['spend_7', 'value_7', 'spend_30'].forEach(setPair);
+    $('k-roas_7').textContent = t.roas_7 ? rx(t.roas_7) : '–';
+    $('k-roas_30').textContent = t.roas_30 ? rx(t.roas_30) : '–';
+    document.querySelectorAll('.wam-kpi-roas').forEach((c) => { const st = status(t[c.dataset.k], 1); c.classList.toggle('good', st === 'good'); c.classList.toggle('bad', st === 'bad'); });
+    const lede = $('lede'); lede.replaceChildren();
+    const b = (s) => el('b', null, s);
+    const sp = both('spend_7'), sv = both('value_7');
+    lede.append('In the last 7 days ', b(d.manager), ' spent ', b(sp.join(' + ')), ' across ', b(String(t.clients)), ' clients and brought in ', b(sv.join(' + ')),
+      ' in sales' + (t.roas_7 ? ', a blended ' : '.'), ...(t.roas_7 ? [b(rx(t.roas_7) + ' ROAS'), t.roas_7 >= TARGET ? ', on target.' : ', below the target.'] : []));
+    chart(d.clients);
+    const tabs = $('tabs'); tabs.replaceChildren();
+    const mkTab = (key, label, color) => { const bt = el('button', 'wam-tab'); bt.dataset.tab = key; if (color) { bt.style.setProperty('--c', color); bt.append(el('span', 'dot')); } bt.append(label); bt.addEventListener('click', () => { show(key); history.replaceState(null, '', '#' + key); }); tabs.append(bt); };
+    mkTab('all', 'All clients');
+    d.clients.forEach((c) => mkTab(c.key, c.label, c.color));
+    $('boards').replaceChildren(...d.clients.map((c) => board(c, d.manager)));
+    const tab = (location.hash || '#all').slice(1);
+    show(d.clients.some((c) => c.key === tab) ? tab : 'all');
+  }
+
+  function show(key) {
+    document.querySelectorAll('.wam-tab').forEach((b) => b.setAttribute('aria-pressed', b.dataset.tab === key ? 'true' : 'false'));
+    document.querySelectorAll('.wam-mgr').forEach((s) => { s.hidden = key !== 'all' && s.dataset.mgr !== key; });
+  }
+
+  fetch('data.json?v=' + Date.now(), { cache: 'no-store' })
+    .then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(render)
+    .catch((e) => { $('boards').replaceChildren(el('div', 'wam-error', 'The report data could not be loaded (' + e.message + '). Try reloading the page.')); $('lede').textContent = ''; });
+})();
+</script>
+</body>
+</html>
