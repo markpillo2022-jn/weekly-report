@@ -11,7 +11,7 @@ Runs at 12:01 AM, 6:01 AM, 12:01 PM and 6:01 PM US Eastern (America/New_York). G
 3. For every returned task whose task_id is in tools/accounts_map.json with a non-empty meta_account_id, call Meta MCP
    ads_get_ad_entities twice and save the raw answer (or {"error": "<message>"} on failure):
    RAW/life_<id>.json  date_preset "maximum"
-   RAW/d30_<id>.json   date_preset "last_30d", time_increment "1"
+   RAW/d30_<id>.json   date_preset "last_30d", time_increment "1" (the script takes the last 7 and last 14 days from these daily rows)
    common args: level "campaign", fields ["name","amount_spent","lead"], limit 1000,
    filtering [{campaign.name CONTAIN ["JN"]}, {campaign.name CONTAIN ["Conversion"]}, {amount_spent GREATER_THAN ["0"]}],
    reporting_purpose ["metric_lookup"], include_additional_context false, advertiser_job "report_measure_or_look_up".

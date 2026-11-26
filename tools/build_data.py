@@ -10,7 +10,7 @@ RAW_DIR holds the answers saved by the nightly task:
   manual.json              list of typed-in docs from the dashboard store data/team/manual ({"id": task_id, ...})
 A Meta file holding {"error": "..."} (or missing) means the account could not be read.
 Same rules as the Claude dashboard: only JN Conversion campaigns count, accounts with none are hidden,
-cost per lead = spend / leads, last 7 days = 7 days ending on the last day of the 30-day pull.
+cost per lead = spend / leads, last 7 / last 14 days = the 7 / 14 days ending on the last day of the 30-day daily pull.
 """
 import json, os, re, sys
 from datetime import date, timedelta, datetime, timezone
@@ -72,22 +72,24 @@ def cpl(s, l):
 
 def acct_totals(life, daily):
     days = sorted([r for r in daily if r["date"]], key=lambda r: r["date"])
-    week = []
+    week, fort = [], []
     if days:
         cut = (date.fromisoformat(days[-1]["date"]) - timedelta(days=6)).isoformat()
         week = [r for r in days if r["date"] >= cut]
+        cut14 = (date.fromisoformat(days[-1]["date"]) - timedelta(days=13)).isoformat()
+        fort = [r for r in days if r["date"] >= cut14]
     s = lambda rows, k: sum(r[k] for r in rows)
-    sa, la, s30, l30, s7, l7 = s(life, "spend"), s(life, "leads"), s(daily, "spend"), s(daily, "leads"), s(week, "spend"), s(week, "leads")
+    sa, la, s14, l14, s7, l7 = s(life, "spend"), s(life, "leads"), s(fort, "spend"), s(fort, "leads"), s(week, "spend"), s(week, "leads")
     return {"campaigns": len({r["campaign"] for r in life + daily}),
             "spend_all": r2(sa), "leads_all": int(la), "cpl_all": cpl(sa, la),
-            "spend_30": r2(s30), "leads_30": int(l30), "cpl_30": cpl(s30, l30),
+            "spend_14": r2(s14), "leads_14": int(l14), "cpl_14": cpl(s14, l14),
             "spend_7": r2(s7), "leads_7": int(l7), "cpl_7": cpl(s7, l7)}
 
 
 def main(raw, out):
     amap = {str(m["task_id"]): m for m in json.load(open(os.path.join(HERE, "accounts_map.json")))}
     manual = {str(m.get("id")): m for m in (load(os.path.join(raw, "manual.json")) or []) if isinstance(m, dict)}
-    F = ["spend_all", "leads_all", "spend_30", "leads_30", "spend_7", "leads_7"]
+    F = ["spend_all", "leads_all", "spend_14", "leads_14", "spend_7", "leads_7"]
     team = {f: 0.0 for f in F}
     team_clients = 0
     managers = []
@@ -113,7 +115,7 @@ def main(raw, out):
             elif tid in manual:
                 mm = manual[tid]
                 row.update({f: mm.get(f, 0) for f in F}, status="typed", typed_by=mm.get("by", ""), typed_at=mm.get("at", ""))
-                for p in ("all", "30", "7"):
+                for p in ("all", "14", "7"):
                     row["cpl_" + p] = cpl(num(row["spend_" + p]), num(row["leads_" + p]))
             else:
                 row.update(status="na")
@@ -127,7 +129,7 @@ def main(raw, out):
                 for f in F:
                     tot[f] += num(r[f])
         totals = {"clients": len(rows)}
-        for p in ("all", "30", "7"):
+        for p in ("all", "14", "7"):
             totals["spend_" + p] = r2(tot["spend_" + p]); totals["leads_" + p] = int(tot["leads_" + p])
             totals["cpl_" + p] = cpl(tot["spend_" + p], tot["leads_" + p])
         for f in F:
@@ -137,7 +139,7 @@ def main(raw, out):
             r.pop("order", None)
         managers.append({"key": key, "label": label, "color": color, "totals": totals, "rows": rows})
     t = {"clients": team_clients}
-    for p in ("all", "30", "7"):
+    for p in ("all", "14", "7"):
         t["spend_" + p] = r2(team["spend_" + p]); t["leads_" + p] = int(team["leads_" + p])
         t["cpl_" + p] = cpl(team["spend_" + p], team["leads_" + p])
     data = {"generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"), "target": TARGET,
