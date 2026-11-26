@@ -81,7 +81,7 @@ def main(raw, out_path):
             for p, (s, v) in vals.items():
                 r[f"spend_{p}"] = r2(s); r[f"{V}_{p}"] = int(v) if V == "leads" else r2(v); r[f"{m}_{p}"] = ratio(m, s, v)
             rows.append(r)
-        rows.sort(key=lambda r: (not r["active"], -r["spend_7"], -r["spend_30"]))
+        rows.sort(key=lambda r: (-r["spend_7"], -r["spend_14"], -r["spend_30"], -r["spend_all"]))  # top spender first
         S = lambda k: sum(r[k] for r in rows)
         a = acct[0] if acct else {}
         t = dict(campaigns=len(rows), active=sum(r["active"] for r in rows))
@@ -92,6 +92,8 @@ def main(raw, out_path):
         if m == "roas":
             for k in ("spend_30", "value_30", "spend_14", "value_14", "spend_7", "value_7"):
                 tot.setdefault(c["currency"], {}).setdefault(k, 0); tot[c["currency"]][k] += t[k]
+    # clients ordered by last-7-day spend, top spender first (each in its own currency)
+    out["clients"].sort(key=lambda c: -(c["totals"].get("spend_7") or 0))
     team = {"clients": sum(1 for c in out["clients"] if c["metric"] == "roas" and not c.get("error")), "by_currency": {}}
     for cur, d in tot.items():
         team["by_currency"][cur] = {k: r2(v) for k, v in d.items()} | {"roas_30": ratio("roas", d["spend_30"], d["value_30"]), "roas_14": ratio("roas", d["spend_14"], d["value_14"]), "roas_7": ratio("roas", d["spend_7"], d["value_7"])}
