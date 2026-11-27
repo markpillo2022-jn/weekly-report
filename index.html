@@ -379,7 +379,7 @@
   const obAv = (s) => OB_AV[[...String(s)].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7) % OB_AV.length];
   const safeUrl = (u) => (/^https:\/\//.test(String(u || '')) ? u : '');
 
-  const OB_PICKS = [['waiting_client', 'Waiting for client'], ['waiting_am', 'Waiting for AM'], ['os_progress', 'Onboarding specialist in progress'], ['ready', 'Ready to launch'], ['blocked', 'Blocked']];
+  const OB_PICKS = [['waiting_client', 'Waiting for client'], ['waiting_am', 'Waiting for AM'], ['os_progress', 'Onboarding specialist in progress'], ['ready', 'Ready to launch'], ['blocked', 'On hold']];
   function obBoard(o) {
     const sec = el('section', 'wam-mgr wam-ob'); sec.id = 'mark-onboarding'; sec.dataset.mgr = 'mark'; sec.style.setProperty('--c', '#2563eb');
     const head = el('div', 'wam-mgr-head');
