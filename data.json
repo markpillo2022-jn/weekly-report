@@ -1,11 +1,11 @@
 {
- "generated_at": "2026-11-27T16:19:25+00:00",
+ "generated_at": "2026-11-27T17:05:01+00:00",
  "target": 140,
  "team": {
   "clients": 19,
-  "spend_all": 149128.83,
+  "spend_all": 149139.41,
   "leads_all": 1620,
-  "cpl_all": 92.05,
+  "cpl_all": 92.06,
   "spend_30": 9625.16,
   "leads_30": 107,
   "cpl_30": 89.95,
@@ -20,7 +20,7 @@
    "color": "#0ea5a4",
    "totals": {
     "clients": 8,
-    "spend_all": 63389.54,
+    "spend_all": 63391.2,
     "leads_all": 566,
     "cpl_all": 112.0,
     "spend_30": 1940.21,
@@ -36,7 +36,7 @@
      "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=238415254239741",
      "note": "",
      "campaigns": 14,
-     "spend_all": 27719.24,
+     "spend_all": 27720.18,
      "leads_all": 339,
      "cpl_all": 81.77,
      "spend_30": 1434.6,
@@ -132,9 +132,9 @@
      "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=417316994259497",
      "note": "",
      "campaigns": 2,
-     "spend_all": 501.76,
+     "spend_all": 502.48,
      "leads_all": 3,
-     "cpl_all": 167.25,
+     "cpl_all": 167.49,
      "spend_30": 496.08,
      "leads_30": 3,
      "cpl_30": 165.36,
@@ -157,7 +157,7 @@
    "color": "#f97316",
    "totals": {
     "clients": 5,
-    "spend_all": 43289.11,
+    "spend_all": 43289.38,
     "leads_all": 650,
     "cpl_all": 66.6,
     "spend_30": 2170.51,
@@ -173,7 +173,7 @@
      "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=570019316758756",
      "note": "",
      "campaigns": 5,
-     "spend_all": 33389.28,
+     "spend_all": 33389.44,
      "leads_all": 574,
      "cpl_all": 58.17,
      "spend_30": 1203.67,
@@ -189,7 +189,7 @@
      "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=3713219945590103",
      "note": "",
      "campaigns": 3,
-     "spend_all": 9899.83,
+     "spend_all": 9899.94,
      "leads_all": 76,
      "cpl_all": 130.26,
      "spend_30": 966.84,
@@ -237,9 +237,9 @@
    "color": "#8b5cf6",
    "totals": {
     "clients": 2,
-    "spend_all": 21109.61,
+    "spend_all": 21113.96,
     "leads_all": 254,
-    "cpl_all": 83.11,
+    "cpl_all": 83.13,
     "spend_30": 2380.58,
     "leads_30": 25,
     "cpl_30": 95.22,
@@ -253,9 +253,9 @@
      "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=1042931787587416",
      "note": "",
      "campaigns": 17,
-     "spend_all": 11594.6,
+     "spend_all": 11597.2,
      "leads_all": 122,
-     "cpl_all": 95.04,
+     "cpl_all": 95.06,
      "spend_30": 1358.54,
      "leads_30": 18,
      "cpl_30": 75.47,
@@ -269,9 +269,9 @@
      "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=509238129596403",
      "note": "",
      "campaigns": 12,
-     "spend_all": 9515.01,
+     "spend_all": 9516.76,
      "leads_all": 132,
-     "cpl_all": 72.08,
+     "cpl_all": 72.1,
      "spend_30": 1022.04,
      "leads_30": 7,
      "cpl_30": 146.01,
@@ -288,9 +288,9 @@
    "color": "#2563eb",
    "totals": {
     "clients": 4,
-    "spend_all": 21340.57,
+    "spend_all": 21344.87,
     "leads_all": 150,
-    "cpl_all": 142.27,
+    "cpl_all": 142.3,
     "spend_30": 3133.86,
     "leads_30": 22,
     "cpl_30": 142.45,
@@ -304,9 +304,9 @@
      "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=399005786516395",
      "note": "",
      "campaigns": 6,
-     "spend_all": 13196.45,
+     "spend_all": 13199.76,
      "leads_all": 82,
-     "cpl_all": 160.93,
+     "cpl_all": 160.97,
      "spend_30": 1234.04,
      "leads_30": 10,
      "cpl_30": 123.4,
@@ -320,7 +320,7 @@
      "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=1940893346503186",
      "note": "",
      "campaigns": 1,
-     "spend_all": 6780.19,
+     "spend_all": 6780.45,
      "leads_all": 59,
      "cpl_all": 114.92,
      "spend_30": 607.06,
@@ -336,9 +336,9 @@
      "ads_url": "https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=1296626455303534",
      "note": "",
      "campaigns": 1,
-     "spend_all": 1363.93,
+     "spend_all": 1364.66,
      "leads_all": 9,
-     "cpl_all": 151.55,
+     "cpl_all": 151.63,
      "spend_30": 1292.76,
      "leads_30": 8,
      "cpl_30": 161.59,
@@ -378,9 +378,9 @@
     "comment_at": "Nov 19, 2026",
     "comment": "we don't have access to the ff: FB page ad account Pixel Domain Landing page",
     "overall_status": "",
+    "overall_pick": "waiting_client",
     "status_by": "",
-    "status_at": "2026-11-27T16:47:56.193Z",
-    "overall_pick": "waiting_client"
+    "status_at": "2026-11-27T16:47:56.193Z"
    },
    {
     "key": "mountain-vista",
@@ -402,9 +402,9 @@
     "comment_at": "Nov 20, 2026",
     "comment": "got it, thanks for the info @Matt Janovsky will start auditing now.",
     "overall_status": "",
+    "overall_pick": "os_progress",
     "status_by": "",
-    "status_at": "2026-11-27T16:48:03.921Z",
-    "overall_pick": "os_progress"
+    "status_at": "2026-11-27T16:48:03.921Z"
    },
    {
     "key": "vesel-service",
@@ -426,9 +426,9 @@
     "comment_at": "Nov 21, 2026",
     "comment": "STATUS UPDATE 2026-11-20 \u2014 LAUNCH BLOCKED, NOT BY US. The client's Meta ad account was compromised and is now disabled. Nothing can launch until they get it back. What happened: An unauthorised campaign (\"New Sales Campaign\") was created in the account on 17 Jan 2024 and sat dormant. It began spending on 4 Nov 2026, th\u2026",
     "overall_status": "",
+    "overall_pick": "blocked",
     "status_by": "",
-    "status_at": "2026-11-27T16:48:09.703Z",
-    "overall_pick": "blocked"
+    "status_at": "2026-11-27T16:48:09.703Z"
    },
    {
     "key": "america-backyard",
@@ -450,9 +450,9 @@
     "comment_at": "Oct 29, 2026",
     "comment": "I'm the AM on America's Backyard. Please put this on hold for now. The client hasn't approved FB ads yet: their ownership wants to talk it through first, and their prior agency is still running their Facebook. No ad account, page, or pixel access has been shared with us yet. I'll update this task once they decide, and \u2026",
     "overall_status": "",
+    "overall_pick": "blocked",
     "status_by": "",
-    "status_at": "2026-11-27T16:48:16.936Z",
-    "overall_pick": "blocked"
+    "status_at": "2026-11-27T16:48:16.936Z"
    },
    {
     "key": "ultimate-window",
@@ -474,9 +474,9 @@
     "comment_at": "Nov 25, 2026",
     "comment": "@Cyle Christenson All requested revisions are complete. I updated the service area copy, corrected the hero bullet and expert section grammar, added the question mark to the CTA heading, and corrected the company name on the services flip card. The service area is pending final confirmation from the AM. cc: @Mark Pillo",
     "overall_status": "",
+    "overall_pick": "ready",
     "status_by": "",
-    "status_at": "2026-11-27T16:48:49.071Z",
-    "overall_pick": "ready"
+    "status_at": "2026-11-27T16:48:49.071Z"
    },
    {
     "key": "battle-born",
@@ -498,9 +498,9 @@
     "comment_at": "Nov 26, 2026",
     "comment": "@Matt Janovsky I have performed a testing campaign and the test was published without errors. we have access to the ff: Ad account Pixel Fb page Billing we don't have access to the ff: Landing page Domain cc: @Cyle Christenson",
     "overall_status": "",
+    "overall_pick": "waiting_client",
     "status_by": "",
-    "status_at": "2026-11-27T16:49:08.460Z",
-    "overall_pick": "waiting_client"
+    "status_at": "2026-11-27T16:49:08.460Z"
    },
    {
     "key": "south-alabama",
@@ -522,9 +522,9 @@
     "comment_at": "Nov 26, 2026",
     "comment": "@Matt Janovsky answers to your 11/24 and 11/25 comments: Page request: Yes, still pending. I didn't resend. Cyle's request from Roofer Marketers (1075086142593432) for Page ID 1686390418104301 shows as pending in our Business Settings, sent 24 Nov, Full access (includes Leads). Screenshot attached. Meta won't allow a s\u2026",
     "overall_status": "",
+    "overall_pick": "waiting_client",
     "status_by": "",
-    "status_at": "2026-11-27T16:49:19.869Z",
-    "overall_pick": "waiting_client"
+    "status_at": "2026-11-27T16:49:19.869Z"
    }
   ],
   "count": 7,
