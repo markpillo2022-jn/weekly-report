@@ -79,6 +79,8 @@
   .wam-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: 18px; padding: 22px 24px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 8px 24px -18px rgba(15,23,42,.45); }
   .wam-h2 { font-size: 21px; font-weight: 700; margin: 0; letter-spacing: -.01em; }
   .wam-chart { position: relative; min-height: 200px; }
+  .wam-charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  @media (max-width: 900px) { .wam-charts { grid-template-columns: 1fr; } }
   .wam-chart svg text { font-size: 15px; }
 
   /* Tabs */
@@ -179,10 +181,16 @@
     <div class="wam-kpi wam-kpi-cpl" data-k="cpl_30"><span class="wam-kpi-label">Cost per lead · last 30 days</span><span class="wam-kpi-value" id="k-cpl_30">—</span><span class="wam-kpi-sub">Team blended</span></div>
   </section>
 
-  <section class="wam-card">
-    <h2 class="wam-h2">Last 7 days by manager</h2>
-    <div class="wam-chart" id="chart" role="img" aria-label="Last 7 days spend by ads manager, with cost per lead colored against the target"></div>
-  </section>
+  <div class="wam-charts">
+    <section class="wam-card">
+      <h2 class="wam-h2">Last 7 days by manager</h2>
+      <div class="wam-chart" id="chart-7" role="img" aria-label="Last 7 days spend by ads manager, with cost per lead colored against the target"></div>
+    </section>
+    <section class="wam-card">
+      <h2 class="wam-h2">Last 30 days by manager</h2>
+      <div class="wam-chart" id="chart-30" role="img" aria-label="Last 30 days spend by ads manager, with cost per lead colored against the target"></div>
+    </section>
+  </div>
 
   <nav class="wam-tabs" aria-label="Filter by manager">
     <button class="wam-tab" data-tab="all" aria-pressed="true">All managers</button>
@@ -223,9 +231,10 @@
     return el('span', 'wam-pill ' + st, v == null ? 'No leads' : fmt2.format(v));
   }
 
-  function chart(managers) {
-    const W = 900, rowH = 46, pad = 120, H = managers.length * rowH + 10;
-    const max = Math.max(1, ...managers.map((m) => m.totals.spend_7));
+  function chart(managers, p) {
+    const sp = (m) => m.totals['spend_' + p], cp = (m) => m.totals['cpl_' + p];
+    const W = 620, rowH = 46, pad = 104, H = managers.length * rowH + 10;
+    const max = Math.max(1, ...managers.map((m) => sp(m)));
     const ns = 'http://www.w3.org/2000/svg';
     const svg = document.createElementNS(ns, 'svg');
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
@@ -233,15 +242,15 @@
       const y = i * rowH + 8;
       const mk = (t, a) => { const n = document.createElementNS(ns, t); Object.entries(a).forEach(([k, v]) => n.setAttribute(k, v)); svg.append(n); return n; };
       mk('text', { x: 0, y: y + 19, fill: 'currentColor', 'font-weight': 700 }).textContent = m.label;
-      const bw = W - pad - 230;
+      const bw = W - pad - 225;
       mk('rect', { x: pad, y: y, width: bw, height: 28, rx: 14, fill: 'currentColor', opacity: 0.08 });
-      mk('rect', { x: pad, y: y, width: Math.max(4, bw * m.totals.spend_7 / max), height: 28, rx: 14, fill: m.color });
-      mk('text', { x: pad + bw + 12, y: y + 19, fill: 'currentColor', 'font-weight': 700 }).textContent = fmt2.format(m.totals.spend_7);
-      const st = status(m.totals.cpl_7, m.totals.spend_7);
+      mk('rect', { x: pad, y: y, width: Math.max(4, bw * sp(m) / max), height: 28, rx: 14, fill: m.color });
+      mk('text', { x: pad + bw + 12, y: y + 19, fill: 'currentColor', 'font-weight': 700 }).textContent = fmt2.format(sp(m));
+      const st = status(cp(m), sp(m));
       mk('text', { x: pad + bw + 112, y: y + 19, fill: st === 'good' ? '#16a34a' : st === 'bad' ? '#dc2626' : 'currentColor', 'font-weight': 700 })
-        .textContent = m.totals.cpl_7 == null ? (m.totals.spend_7 > 0 ? 'No leads' : '–') : fmt2.format(m.totals.cpl_7) + ' CPL';
+        .textContent = cp(m) == null ? (sp(m) > 0 ? 'No leads' : '–') : fmt2.format(cp(m)) + ' CPL';
     });
-    $('chart').replaceChildren(svg);
+    $('chart-' + p).replaceChildren(svg);
   }
 
   function board(m) {
@@ -301,7 +310,8 @@
     $('k-spend_30').textContent = fmt0.format(t.spend_30);
     $('k-cpl_30').textContent = t.cpl_30 == null ? '–' : fmt2.format(t.cpl_30);
     document.querySelectorAll('.wam-kpi-cpl').forEach((c) => { const k = c.dataset.k; const st = status(t[k], t[k.replace('cpl', 'spend')]); c.classList.toggle('good', st === 'good'); c.classList.toggle('bad', st === 'bad'); });
-    chart(d.managers);
+    chart(d.managers, '7');
+    chart(d.managers, '30');
     $('boards').replaceChildren(...d.managers.map(board));
     const tab = (location.hash || '#all').slice(1);
     show(['danica', 'genesis', 'marge', 'mark'].includes(tab) ? tab : 'all');
