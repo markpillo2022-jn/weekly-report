@@ -377,9 +377,10 @@
     "comment_by": "Mark Pillo",
     "comment_at": "Nov 19, 2026",
     "comment": "we don't have access to the ff: FB page ad account Pixel Domain Landing page",
-    "overall_status": "WAITING ACCESS",
+    "overall_status": "",
     "status_by": "",
-    "status_at": "2026-11-27T16:07:59.182Z"
+    "status_at": "2026-11-27T16:47:56.193Z",
+    "overall_pick": "waiting_client"
    },
    {
     "key": "mountain-vista",
@@ -400,9 +401,10 @@
     "comment_by": "Mark Pillo",
     "comment_at": "Nov 20, 2026",
     "comment": "got it, thanks for the info @Matt Janovsky will start auditing now.",
-    "overall_status": "AUDITING",
+    "overall_status": "",
     "status_by": "",
-    "status_at": "2026-11-27T16:08:08.799Z"
+    "status_at": "2026-11-27T16:48:03.921Z",
+    "overall_pick": "os_progress"
    },
    {
     "key": "vesel-service",
@@ -423,9 +425,10 @@
     "comment_by": "Hailey Chamberlain",
     "comment_at": "Nov 21, 2026",
     "comment": "STATUS UPDATE 2026-11-20 \u2014 LAUNCH BLOCKED, NOT BY US. The client's Meta ad account was compromised and is now disabled. Nothing can launch until they get it back. What happened: An unauthorised campaign (\"New Sales Campaign\") was created in the account on 17 Jan 2024 and sat dormant. It began spending on 4 Nov 2026, th\u2026",
-    "overall_status": "BLOCK",
+    "overall_status": "",
     "status_by": "",
-    "status_at": "2026-11-27T16:08:26.180Z"
+    "status_at": "2026-11-27T16:48:09.703Z",
+    "overall_pick": "blocked"
    },
    {
     "key": "america-backyard",
@@ -446,9 +449,10 @@
     "comment_by": "Hailey Chamberlain",
     "comment_at": "Oct 29, 2026",
     "comment": "I'm the AM on America's Backyard. Please put this on hold for now. The client hasn't approved FB ads yet: their ownership wants to talk it through first, and their prior agency is still running their Facebook. No ad account, page, or pixel access has been shared with us yet. I'll update this task once they decide, and \u2026",
-    "overall_status": "ON HOLD",
+    "overall_status": "",
     "status_by": "",
-    "status_at": "2026-11-27T16:08:35.981Z"
+    "status_at": "2026-11-27T16:48:16.936Z",
+    "overall_pick": "blocked"
    },
    {
     "key": "ultimate-window",
@@ -469,9 +473,10 @@
     "comment_by": "Nekke Gutierrez",
     "comment_at": "Nov 25, 2026",
     "comment": "@Cyle Christenson All requested revisions are complete. I updated the service area copy, corrected the hero bullet and expert section grammar, added the question mark to the CTA heading, and corrected the company name on the services flip card. The service area is pending final confirmation from the AM. cc: @Mark Pillo",
-    "overall_status": "WAITING FINAL CONFIRMATION",
+    "overall_status": "",
     "status_by": "",
-    "status_at": "2026-11-27T16:10:09.764Z"
+    "status_at": "2026-11-27T16:48:49.071Z",
+    "overall_pick": "ready"
    },
    {
     "key": "battle-born",
@@ -492,9 +497,10 @@
     "comment_by": "Mark Pillo",
     "comment_at": "Nov 26, 2026",
     "comment": "@Matt Janovsky I have performed a testing campaign and the test was published without errors. we have access to the ff: Ad account Pixel Fb page Billing we don't have access to the ff: Landing page Domain cc: @Cyle Christenson",
-    "overall_status": "WAITING ACCESS",
+    "overall_status": "",
     "status_by": "",
-    "status_at": "2026-11-27T16:11:02.868Z"
+    "status_at": "2026-11-27T16:49:08.460Z",
+    "overall_pick": "waiting_client"
    },
    {
     "key": "south-alabama",
@@ -515,14 +521,23 @@
     "comment_by": "Mark Pillo",
     "comment_at": "Nov 26, 2026",
     "comment": "@Matt Janovsky answers to your 11/24 and 11/25 comments: Page request: Yes, still pending. I didn't resend. Cyle's request from Roofer Marketers (1075086142593432) for Page ID 1686390418104301 shows as pending in our Business Settings, sent 24 Nov, Full access (includes Leads). Screenshot attached. Meta won't allow a s\u2026",
-    "overall_status": "WAITING ACCESS",
+    "overall_status": "",
     "status_by": "",
-    "status_at": "2026-11-27T16:11:46.898Z"
+    "status_at": "2026-11-27T16:49:19.869Z",
+    "overall_pick": "waiting_client"
    }
   ],
   "count": 7,
   "stale": 2,
   "waiting_client": 1,
-  "steps": 8
+  "steps": 8,
+  "total": 7,
+  "picks": {
+   "waiting_client": 3,
+   "waiting_am": 0,
+   "os_progress": 1,
+   "ready": 1,
+   "blocked": 2
+  }
  }
 }
