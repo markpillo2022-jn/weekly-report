@@ -8,12 +8,16 @@ RAW_DIR holds the answers saved by the nightly task:
   life_<metaId>.json       Meta ads_get_ad_entities answer, campaign level, date_preset maximum
   d30_<metaId>.json        Meta ads_get_ad_entities answer, campaign level, last_30d, time_increment 1
   manual.json              list of typed-in docs from the dashboard store data/team/manual ({"id": task_id, ...})
+  ob_tasks.json            ClickUp clickup_filter_tasks answer for Mark's open onboarding tasks (list 901405982858)
+  ob_task_<id>.json        clickup_get_task answer for each of those tasks (for date_created)
+  ob_comments_<id>.json    clickup_get_task_comments answer for each of those tasks
 A Meta file holding {"error": "..."} (or missing) means the account could not be read.
 Same rules as the Claude dashboard: only JN Conversion campaigns count, accounts with none are hidden,
 cost per lead = spend / leads, last 7 days = 7 days ending on the last day of the 30-day pull; last 30 days = the whole daily pull.
 """
 import json, os, re, sys
 from datetime import date, timedelta, datetime, timezone
+from zoneinfo import ZoneInfo
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 MANAGERS = [("danica", "Danica", "#0ea5a4"), ("genesis", "Genesis", "#f97316"),
@@ -84,6 +88,101 @@ def acct_totals(life, daily):
             "spend_7": r2(s7), "leads_7": int(l7), "cpl_7": cpl(s7, l7)}
 
 
+# --- Mark Pilio onboarding (pre-launch) box -------------------------------------------------------
+# Same rules as the Claude dashboard's ob_mark loader.
+OB_LIST = "901405982858"          # ClickUp Onboarding > "OB - (Facebook Ads) - Cyle"
+OB_USER = "88234610"              # Mark Pillo
+OB_STAGES = [  # ClickUp status -> stage shown, in pipeline order
+    ("to do", "Getting started"), ("waiting on client", "Waiting on client"), ("connect assets", "Connecting assets"),
+    ("ad creation", "Creatives in progress"), ("done-waiting on domain", "Waiting on domain"),
+    ("waiting landing page", "Landing page"), ("waiting on approval", "Client review"),
+    ("campaign creation", "Campaign build")]
+OB_LIVE = {"ads live"}
+OB_DONE = {"complete", "cancel services", "cancelled", "closed"}
+OB_AMS = {"Hailey Chamberlain": "Hailey", "Matt Janovsky": "Matt"}
+ET = ZoneInfo("Asia/Manila")  # same clock as the onboarding dashboard and the page stamp
+
+
+def ob_client(name):
+    n = re.sub(r"^\s*facebook ads\s*-\s*", "", str(name or ""), flags=re.I)
+    n = re.split(r"\s+\(|\s+[—–]\s+|\s+-\s+", n)[0].strip()
+    words = [re.sub(r"[^a-z0-9]", "", w) for w in n.lower().split()]
+    words = [re.sub(r"s$", "", w) for w in words if w][:2]
+    return " ".join(words), n
+
+
+def ob_date(ms):
+    return datetime.fromtimestamp(int(ms) / 1000, ET) if ms else None
+
+
+def build_onboarding(raw, now=None):
+    now = now or datetime.now(ET)
+    a = load(os.path.join(raw, "ob_tasks.json"))
+    if not a or a.get("error") or not isinstance(a.get("tasks"), list):
+        return {"error": "ClickUp onboarding list did not load"}
+    groups = {}
+    for t in a["tasks"]:
+        st = str(t.get("status", "")).lower()
+        if st in OB_DONE:
+            continue
+        if not any(str(x.get("id")) == OB_USER for x in t.get("assignees") or []):
+            continue
+        key, nm = ob_client(t.get("name"))
+        g = groups.setdefault(key, {"names": [], "tasks": []})
+        g["names"].append(nm)
+        g["tasks"].append(t)
+    order = [s for s, _ in OB_STAGES]
+    rows = []
+    for key, g in groups.items():
+        sts = [str(t.get("status", "")).lower() for t in g["tasks"]]
+        if any(s in OB_LIVE for s in sts):
+            continue  # already launched
+        full = []
+        for t in g["tasks"]:
+            d = load(os.path.join(raw, f"ob_task_{t['id']}.json")) or {}
+            c = load(os.path.join(raw, f"ob_comments_{t['id']}.json")) or {}
+            full.append({"t": t, "created": d.get("date_created"), "updated": d.get("date_updated") or t.get("date_updated"),
+                         "assignees": d.get("assignees") or t.get("assignees") or [],
+                         "comments": c.get("comments") if isinstance(c.get("comments"), list) else []})
+        lead = max(full, key=lambda f: (order.index(str(f["t"]["status"]).lower()) if str(f["t"]["status"]).lower() in order else -1,
+                                        int(f["updated"] or 0)))
+        created = [int(f["created"]) for f in full if f["created"]]
+        start = min(created) if created else None
+        latest = max(full, key=lambda f: int(f["created"] or 0))
+        comments = [c for f in full for c in f["comments"]]
+        last_c = max(comments, key=lambda c: int(c.get("date") or 0)) if comments else None
+        last_ms = max([int(f["updated"] or 0) for f in full] + ([int(last_c["date"])] if last_c else []))
+        ams = []
+        for f in full:
+            for x in f["assignees"]:
+                n = OB_AMS.get(x.get("username"))
+                if n and n not in ams:
+                    ams.append(n)
+        status = str(lead["t"]["status"]).lower()
+        name = min(g["names"], key=len)
+        sd, ld = ob_date(start), ob_date(last_ms)
+        text = re.sub(r"\s+", " ", str((last_c or {}).get("comment_text") or "")).strip()
+        rows.append({
+            "client": name, "initials": "".join(w[0] for w in re.findall(r"[A-Za-z0-9]+", name)[:2]).upper(),
+            "url": str(lead["t"].get("url", "")),
+            "started": sd.strftime("%-m/%-d/%Y") if sd else "",
+            "days_since_start": (now.date() - sd.date()).days if sd else None,
+            "latest_task": str(latest["t"].get("name", "")),
+            "latest_created": ob_date(latest["created"]).strftime("%b %-d, %Y") if latest["created"] else "",
+            "am": ", ".join(ams),
+            "stage": dict(OB_STAGES).get(status, status.title()), "stage_step": order.index(status) + 1 if status in order else 0,
+            "clickup_status": status.title(), "tasks": len(full),
+            "last_activity": ld.strftime("%b %-d, %Y") if ld else "",
+            "days_idle": (now.date() - ld.date()).days if ld else None,
+            "comment_by": str(((last_c or {}).get("user") or {}).get("username", "")),
+            "comment_at": ob_date(last_c["date"]).strftime("%b %-d, %Y") if last_c else "",
+            "comment": text[:320] + ("…" if len(text) > 320 else ""),
+        })
+    rows.sort(key=lambda r: (-(r["days_idle"] if r["days_idle"] is not None else -1), r["client"]))
+    return {"clients": rows, "count": len(rows), "stale": sum(1 for r in rows if (r["days_idle"] or 0) > 7),
+            "waiting_client": sum(1 for r in rows if r["stage"] == "Waiting on client"), "steps": len(OB_STAGES)}
+
+
 def main(raw, out):
     amap = {str(m["task_id"]): m for m in json.load(open(os.path.join(HERE, "accounts_map.json")))}
     manual = {str(m.get("id")): m for m in (load(os.path.join(raw, "manual.json")) or []) if isinstance(m, dict)}
@@ -142,6 +241,10 @@ def main(raw, out):
         t["cpl_" + p] = cpl(team["spend_" + p], team["leads_" + p])
     data = {"generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"), "target": TARGET,
             "team": t, "managers": managers}
+    try:
+        data["onboarding"] = build_onboarding(raw)
+    except Exception as e:  # never block the ads numbers
+        data["onboarding"] = {"error": str(e)}
     with open(out, "w") as f:
         json.dump(data, f, indent=1)
     print(f"wrote {out}: {team_clients} clients, 7d spend {t['spend_7']}, 7d CPL {t['cpl_7']}")
