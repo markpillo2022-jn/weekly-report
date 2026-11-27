@@ -175,8 +175,8 @@
     <div class="wam-kpi" style="--k:#2563eb"><span class="wam-kpi-label">Spend · last 7 days</span><span class="wam-kpi-value" id="k-spend_7">—</span><span class="wam-kpi-sub">All green clients</span></div>
     <div class="wam-kpi" style="--k:#0ea5a4"><span class="wam-kpi-label">Leads · last 7 days</span><span class="wam-kpi-value" id="k-leads_7">—</span><span class="wam-kpi-sub">Meta lead events</span></div>
     <div class="wam-kpi wam-kpi-cpl" data-k="cpl_7"><span class="wam-kpi-label">Cost per lead · last 7 days</span><span class="wam-kpi-value" id="k-cpl_7">—</span><span class="wam-kpi-sub">Team blended</span></div>
-    <div class="wam-kpi" style="--k:#8b5cf6"><span class="wam-kpi-label">Spend · last 14 days</span><span class="wam-kpi-value" id="k-spend_14">—</span><span class="wam-kpi-sub">All green clients</span></div>
-    <div class="wam-kpi wam-kpi-cpl" data-k="cpl_14"><span class="wam-kpi-label">Cost per lead · last 14 days</span><span class="wam-kpi-value" id="k-cpl_14">—</span><span class="wam-kpi-sub">Team blended</span></div>
+    <div class="wam-kpi" style="--k:#8b5cf6"><span class="wam-kpi-label">Spend · last 30 days</span><span class="wam-kpi-value" id="k-spend_30">—</span><span class="wam-kpi-sub">All green clients</span></div>
+    <div class="wam-kpi wam-kpi-cpl" data-k="cpl_30"><span class="wam-kpi-label">Cost per lead · last 30 days</span><span class="wam-kpi-value" id="k-cpl_30">—</span><span class="wam-kpi-sub">Team blended</span></div>
   </section>
 
   <section class="wam-card">
@@ -253,13 +253,13 @@
     id.append(nm);
     const chips = el('div', 'wam-chips');
     [['7d spend', fmt2.format(m.totals.spend_7), ''], ['7d CPL', m.totals.cpl_7 == null ? (m.totals.spend_7 > 0 ? 'No leads' : '–') : fmt2.format(m.totals.cpl_7), status(m.totals.cpl_7, m.totals.spend_7)],
-     ['14d spend', fmt0.format(m.totals.spend_14), ''], ['14d CPL', m.totals.cpl_14 == null ? (m.totals.spend_14 > 0 ? 'No leads' : '–') : fmt2.format(m.totals.cpl_14), status(m.totals.cpl_14, m.totals.spend_14)]]
+     ['30d spend', fmt0.format(m.totals.spend_30), ''], ['30d CPL', m.totals.cpl_30 == null ? (m.totals.spend_30 > 0 ? 'No leads' : '–') : fmt2.format(m.totals.cpl_30), status(m.totals.cpl_30, m.totals.spend_30)]]
       .forEach(([l, v, st]) => { const c = el('div', 'wam-chip ' + st); c.append(el('span', null, l), el('b', null, v)); chips.append(c); });
     head.append(id, chips);
     const wrap = el('div', 'wam-tablewrap');
     const t = el('table', 'wam-table');
     t.innerHTML = '<thead><tr><th></th><th></th><th colspan="3" class="wam-group wam-sep"><span>Spend</span></th><th colspan="3" class="wam-group wam-sep"><span>Cost per leads</span></th></tr>' +
-      '<tr><th scope="col">Manager</th><th scope="col">Account name</th><th class="wam-sep" scope="col">Last 7 days</th><th scope="col">Last 14 days</th><th scope="col">Overall</th><th class="wam-sep" scope="col">Last 7 days</th><th scope="col">Last 14 days</th><th scope="col">Overall</th></tr></thead>';
+      '<tr><th scope="col">Manager</th><th scope="col">Account name</th><th class="wam-sep" scope="col">Last 7 days</th><th scope="col">Last 30 days</th><th scope="col">Overall</th><th class="wam-sep" scope="col">Last 7 days</th><th scope="col">Last 30 days</th><th scope="col">Overall</th></tr></thead>';
     const tb = el('tbody');
     if (!m.rows.length) { const tr = el('tr'); const td = el('td', 'wam-na', 'No green accounts with JN Conversion campaigns.'); td.colSpan = 8; tr.append(td); tb.append(tr); }
     m.rows.forEach((r) => {
@@ -271,7 +271,7 @@
       if (r.note && r.status !== 'ok') tdA.append(el('small', null, r.note));
       if (r.status === 'typed') tdA.append(el('small', 'wam-typed', 'Typed in' + (r.typed_by ? ' by ' + r.typed_by : '') + (r.typed_at ? ' · ' + when(r.typed_at) : '')));
       tr.append(tdA);
-      [['spend_7', 'm'], ['spend_14', 'm'], ['spend_all', 'm'], ['cpl_7', 'c'], ['cpl_14', 'c'], ['cpl_all', 'c']].forEach(([f, k], i) => {
+      [['spend_7', 'm'], ['spend_30', 'm'], ['spend_all', 'm'], ['cpl_7', 'c'], ['cpl_30', 'c'], ['cpl_all', 'c']].forEach(([f, k], i) => {
         const td = el('td'); if (i === 0 || i === 3) td.classList.add('wam-sep');
         if (r.status === 'typed') td.classList.add('wam-typedcell');
         if (r.status === 'na') { td.textContent = 'N/A'; td.classList.add('wam-na'); }
@@ -298,8 +298,8 @@
     $('k-spend_7').textContent = fmt0.format(t.spend_7);
     $('k-leads_7').textContent = intf.format(t.leads_7);
     $('k-cpl_7').textContent = t.cpl_7 == null ? '–' : fmt2.format(t.cpl_7);
-    $('k-spend_14').textContent = fmt0.format(t.spend_14);
-    $('k-cpl_14').textContent = t.cpl_14 == null ? '–' : fmt2.format(t.cpl_14);
+    $('k-spend_30').textContent = fmt0.format(t.spend_30);
+    $('k-cpl_30').textContent = t.cpl_30 == null ? '–' : fmt2.format(t.cpl_30);
     document.querySelectorAll('.wam-kpi-cpl').forEach((c) => { const k = c.dataset.k; const st = status(t[k], t[k.replace('cpl', 'spend')]); c.classList.toggle('good', st === 'good'); c.classList.toggle('bad', st === 'bad'); });
     chart(d.managers);
     $('boards').replaceChildren(...d.managers.map(board));
