@@ -157,6 +157,16 @@
   .wam-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
   .wam-mgr:not(.wam-open) > .wam-tablewrap { display: none; }
   @media print { .wam-mgr > .wam-tablewrap { display: block !important; } .wam-toggle { display: none; } }
+  .wam-mgr-head { align-items: center; }
+  .wam-mgr-head > .wam-mgr-id { flex: 1 1 260px; }
+  .wam-headright { flex: 0 1 62%; min-width: min(100%, 720px); justify-content: flex-end; flex-wrap: nowrap; }
+  .wam-headright > .wam-chips { flex: 1 1 auto; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 10px; }
+  .wam-headright .wam-toggle { flex: none; white-space: nowrap; }
+  .wam-headright .wam-chip { padding: 10px 14px; min-width: 0; border-radius: 14px; gap: 4px; }
+  .wam-headright .wam-chip span { font-size: 13px; font-weight: 700; }
+  .wam-headright .wam-chip b { font-size: clamp(20px, 1.9vw, 25px); line-height: 1.1; white-space: nowrap; }
+  .wam-headright .wam-chip.good b::before, .wam-headright .wam-chip.bad b::before { width: 11px; height: 11px; flex: none; }
+  @media (max-width: 900px) { .wam-headright { flex-basis: 100%; min-width: 0; flex-wrap: wrap; } .wam-headright > .wam-chips { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); } .wam-headright .wam-chip b { font-size: 22px; } }
   .wam-ob .wam-mgr-head { background: linear-gradient(120deg, color-mix(in srgb, var(--c) 82%, #0ea5a4), color-mix(in srgb, var(--c) 62%, #0b1f4d)); }
   .wam-ob-sub { display: block; font-size: 14px; font-weight: 500; color: rgba(255,255,255,.85); }
   .wam-obtable { min-width: 1080px; }
