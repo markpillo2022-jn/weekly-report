@@ -11,7 +11,7 @@ RAW_DIR holds the answers saved by the nightly task:
   ob_tasks.json            ClickUp clickup_filter_tasks answer for Mark's open onboarding tasks (list 901405982858)
   ob_task_<id>.json        clickup_get_task answer for each of those tasks (for date_created)
   ob_comments_<id>.json    clickup_get_task_comments answer for each of those tasks
-  ob_status.json           list of typed overall-status docs from the dashboard store data/team/ob_status ({"id": client key, "text", "by", "at"})
+  ob_status.json           list of typed overall-status docs from the dashboard store data/team/ob_status ({"id": client key, "text", "pick", "by", "at"})
 A Meta file holding {"error": "..."} (or missing) means the account could not be read.
 Same rules as the Claude dashboard: only JN Conversion campaigns count, accounts with none are hidden,
 cost per lead = spend / leads, last 7 days = 7 days ending on the last day of the 30-day pull; last 30 days = the whole daily pull.
@@ -116,6 +116,11 @@ def ob_date(ms):
     return datetime.fromtimestamp(int(ms) / 1000, ET) if ms else None
 
 
+# Overall status picks set in the dashboard dropdown (data/team/ob_status docs, field "pick").
+OB_PICKS = {"waiting_client": "Waiting for client", "waiting_am": "Waiting for AM",
+            "os_progress": "Onboarding specialist in progress", "ready": "Ready to launch"}
+
+
 def build_onboarding(raw, now=None):
     now = now or datetime.now(ET)
     a = load(os.path.join(raw, "ob_tasks.json"))
@@ -180,11 +185,13 @@ def build_onboarding(raw, now=None):
             "comment_at": ob_date(last_c["date"]).strftime("%b %-d, %Y") if last_c else "",
             "comment": text[:320] + ("…" if len(text) > 320 else ""),
             "overall_status": str((typed.get(key) or {}).get("text", "")),
+            "overall_pick": (lambda v: v if v in OB_PICKS else "")(str((typed.get(key) or {}).get("pick", ""))),
             "status_by": str((typed.get(key) or {}).get("by", "")), "status_at": str((typed.get(key) or {}).get("at", "")),
         })
     rows.sort(key=lambda r: (-(r["days_idle"] if r["days_idle"] is not None else -1), r["client"]))
     return {"clients": rows, "count": len(rows), "stale": sum(1 for r in rows if (r["days_idle"] or 0) > 7),
-            "waiting_client": sum(1 for r in rows if r["stage"] == "Waiting on client"), "steps": len(OB_STAGES)}
+            "waiting_client": sum(1 for r in rows if r["stage"] == "Waiting on client"), "steps": len(OB_STAGES),
+            "total": len(rows), "picks": {k: sum(1 for r in rows if r["overall_pick"] == k) for k in OB_PICKS}}
 
 
 def main(raw, out):
