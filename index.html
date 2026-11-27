@@ -288,7 +288,7 @@
   let TARGET = 140;
   const status = (cpl, spend) => (cpl == null ? (spend > 0 ? 'bad' : '') : (cpl <= TARGET ? 'good' : 'bad'));
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
-  const when = (iso) => new Date(iso).toLocaleString('en-US', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' Manila time';
+  const when = (iso) => new Date(iso).toLocaleString('en-US', { timeZone: 'America/Denver', timeZoneName: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 
   function cplNode(v, spend) {
     const st = status(v, spend);
