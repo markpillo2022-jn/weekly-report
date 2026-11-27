@@ -149,6 +149,14 @@
   @media (max-width: 560px) { .wam-hero { padding: 24px 20px; } .wam-actions { align-items: flex-start; } .wam-mgr-head { padding: 16px; } }
   @media print { .wam-refresh, .wam-tabs { display: none; } .wam-mgr[hidden] { display: flex !important; } }
   /* Mark Pilio onboarding (pre-launch) box */
+  .wam-headright { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+  .wam-toggle { font: inherit; font-size: 14px; font-weight: 700; color: #fff; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.45); transition: background .15s ease; }
+  .wam-toggle:hover { background: rgba(255,255,255,.3); }
+  .wam-toggle:focus-visible { outline: 3px solid #fde68a; outline-offset: 3px; }
+  .wam-toggle svg { width: 18px; height: 18px; transition: transform .2s ease; }
+  .wam-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .wam-mgr:not(.wam-open) > .wam-tablewrap { display: none; }
+  @media print { .wam-mgr > .wam-tablewrap { display: block !important; } .wam-toggle { display: none; } }
   .wam-ob .wam-mgr-head { background: linear-gradient(120deg, color-mix(in srgb, var(--c) 82%, #0ea5a4), color-mix(in srgb, var(--c) 62%, #0b1f4d)); }
   .wam-ob-sub { display: block; font-size: 14px; font-weight: 500; color: rgba(255,255,255,.85); }
   .wam-obtable { min-width: 1080px; }
@@ -286,6 +294,22 @@
     $('chart-' + p).replaceChildren(svg);
   }
 
+  function setOpen(sec, open) {
+    sec.classList.toggle('wam-open', open);
+    const b = sec.querySelector('.wam-toggle'); if (!b) return;
+    const what = sec.classList.contains('wam-ob') ? 'clients' : 'accounts';
+    b.setAttribute('aria-expanded', open ? 'true' : 'false');
+    b.querySelector('.wam-toggle-text').textContent = (open ? 'Hide ' : 'Show ') + what;
+    b.setAttribute('aria-label', (open ? 'Hide ' : 'Show ') + b.dataset.label);
+  }
+  function headRight(sec, chips, label) {
+    const b = el('button', 'wam-toggle'); b.type = 'button'; b.dataset.label = label;
+    b.append(el('span', 'wam-toggle-text'));
+    b.insertAdjacentHTML('beforeend', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>');
+    b.addEventListener('click', () => setOpen(sec, !sec.classList.contains('wam-open')));
+    const r = el('div', 'wam-headright'); r.append(chips, b);
+    return r;
+  }
   function board(m) {
     const sec = el('section', 'wam-mgr'); sec.dataset.mgr = m.key; sec.style.setProperty('--c', m.color);
     const head = el('div', 'wam-mgr-head');
@@ -297,7 +321,7 @@
     [['7d spend', fmt2.format(m.totals.spend_7), ''], ['7d CPL', m.totals.cpl_7 == null ? (m.totals.spend_7 > 0 ? 'No leads' : '–') : fmt2.format(m.totals.cpl_7), status(m.totals.cpl_7, m.totals.spend_7)],
      ['30d spend', fmt0.format(m.totals.spend_30), ''], ['30d CPL', m.totals.cpl_30 == null ? (m.totals.spend_30 > 0 ? 'No leads' : '–') : fmt2.format(m.totals.cpl_30), status(m.totals.cpl_30, m.totals.spend_30)]]
       .forEach(([l, v, st]) => { const c = el('div', 'wam-chip ' + st); c.append(el('span', null, l), el('b', null, v)); chips.append(c); });
-    head.append(id, chips);
+    head.append(id, headRight(sec, chips, m.label + "'s accounts"));
     const wrap = el('div', 'wam-tablewrap');
     const t = el('table', 'wam-table');
     t.innerHTML = '<thead><tr><th></th><th></th><th colspan="3" class="wam-group wam-sep"><span>Spend</span></th><th colspan="3" class="wam-group wam-sep"><span>Cost per leads</span></th></tr>' +
@@ -342,7 +366,7 @@
     const chips = el('div', 'wam-chips');
     if (!o.error) [['Pre-launch', o.count, ''], ['Waiting on client', o.waiting_client, ''], ['No activity 7+ days', o.stale, o.stale ? 'bad' : 'good']]
       .forEach(([l, v, st]) => { const c = el('div', 'wam-chip ' + st); c.append(el('span', null, l), el('b', null, String(v))); chips.append(c); });
-    head.append(id, chips);
+    head.append(id, headRight(sec, chips, 'onboarding clients'));
     const wrap = el('div', 'wam-tablewrap');
     const t = el('table', 'wam-table wam-obtable');
     t.innerHTML = '<thead><tr><th scope="col">Client</th><th scope="col">AM</th><th scope="col">Stage</th><th scope="col">Days since start</th><th scope="col">Last activity</th><th scope="col">Summary</th><th scope="col">Overall status</th></tr></thead>';
@@ -411,13 +435,14 @@
     chart(d.managers, '7');
     chart(d.managers, '30');
     $('boards').replaceChildren(...d.managers.map(board), ...(d.onboarding ? [obBoard(d.onboarding)] : []));
+    document.querySelectorAll('.wam-mgr').forEach((s) => setOpen(s, false));
     const tab = (location.hash || '#all').slice(1);
     show(['danica', 'genesis', 'marge', 'mark'].includes(tab) ? tab : 'all');
   }
 
   function show(key) {
     document.querySelectorAll('.wam-tab').forEach((b) => b.setAttribute('aria-pressed', b.dataset.tab === key ? 'true' : 'false'));
-    document.querySelectorAll('.wam-mgr').forEach((s) => { s.hidden = key !== 'all' && s.dataset.mgr !== key; });
+    document.querySelectorAll('.wam-mgr').forEach((s) => { s.hidden = key !== 'all' && s.dataset.mgr !== key; if (key !== 'all' && !s.hidden && !s.classList.contains('wam-ob')) setOpen(s, true); });
   }
   document.querySelectorAll('.wam-tab').forEach((b) => b.addEventListener('click', () => { show(b.dataset.tab); history.replaceState(null, '', '#' + b.dataset.tab); }));
 
