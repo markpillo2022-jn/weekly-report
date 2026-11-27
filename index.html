@@ -159,15 +159,17 @@
   @media print { .wam-mgr > .wam-tablewrap { display: block !important; } .wam-toggle { display: none; } }
   .wam-mgr-head { align-items: center; }
   .wam-mgr-head > .wam-mgr-id { flex: 1 1 260px; }
-  .wam-headright { flex: 0 1 62%; min-width: min(100%, 720px); justify-content: flex-end; flex-wrap: nowrap; }
+  .wam-headright { flex: 0 1 68%; min-width: min(100%, 820px); justify-content: flex-end; flex-wrap: nowrap; }
   .wam-headright > .wam-chips { flex: 1 1 auto; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 10px; }
   .wam-headright .wam-toggle { flex: none; white-space: nowrap; }
   .wam-headright .wam-chip { padding: 10px 14px; min-width: 0; border-radius: 14px; gap: 4px; }
   .wam-headright .wam-chip span { font-size: 13px; font-weight: 700; }
   .wam-headright .wam-chip b { font-size: clamp(20px, 1.9vw, 25px); line-height: 1.1; white-space: nowrap; }
   .wam-headright .wam-chip.good b::before, .wam-headright .wam-chip.bad b::before { width: 11px; height: 11px; flex: none; }
+  @media (max-width: 1320px) { .wam-headright { flex-basis: 100%; } }
   @media (max-width: 900px) { .wam-headright { flex-basis: 100%; min-width: 0; flex-wrap: wrap; } .wam-headright > .wam-chips { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); } .wam-headright .wam-chip b { font-size: 22px; } }
-  .wam-ob .wam-headright .wam-chip span { letter-spacing: .02em; }
+  .wam-ob .wam-headright .wam-chip { padding: 10px 10px; }
+  .wam-ob .wam-headright .wam-chip span { letter-spacing: 0; font-size: 12px; }
   .wam-ob .wam-mgr-head { background: linear-gradient(120deg, color-mix(in srgb, var(--c) 82%, #0ea5a4), color-mix(in srgb, var(--c) 62%, #0b1f4d)); }
   .wam-ob-sub { display: block; font-size: 14px; font-weight: 500; color: rgba(255,255,255,.85); }
   .wam-obtable { min-width: 1080px; }
@@ -198,11 +200,17 @@
   .wam-obtable { min-width: 1280px; }
   .wam-ob-comment { max-width: 400px; }
   .wam-ob-mine { min-width: 230px; max-width: 300px; }
-  .wam-ob-pill { display: block; margin-bottom: 6px; padding: 8px 12px; border-radius: 12px; font-size: 14.5px; font-weight: 800; border: 2px solid; }
-  .wam-ob-pill.p-waiting_client { border-color: #f59e0b; background: color-mix(in srgb, #f59e0b 14%, var(--color-panel)); }
-  .wam-ob-pill.p-waiting_am { border-color: #8b5cf6; background: color-mix(in srgb, #8b5cf6 14%, var(--color-panel)); }
-  .wam-ob-pill.p-os_progress { border-color: #0ea5e9; background: color-mix(in srgb, #0ea5e9 14%, var(--color-panel)); }
-  .wam-ob-pill.p-ready { border-color: #16a34a; background: color-mix(in srgb, #16a34a 14%, var(--color-panel)); }
+  .wam-ob-pill { display: block; padding: 14px 16px; border-radius: 14px; font-size: 17px; font-weight: 800; background: var(--pc, #64748b); color: #fff; }
+  .wam-ob-pill.p-ready { --pc: #16a34a; }
+  .wam-ob-pill.p-waiting_am { --pc: #facc15; color: #422006; }
+  .wam-ob-pill.p-waiting_client { --pc: #dc2626; }
+  .wam-ob-pill.p-blocked { --pc: #6b7280; }
+  .wam-ob-pill.p-os_progress { --pc: #2563eb; }
+  .wam-headright .wam-chip.c-ready { box-shadow: inset 0 4px 0 #4ade80; }
+  .wam-headright .wam-chip.c-waiting_am { box-shadow: inset 0 4px 0 #facc15; }
+  .wam-headright .wam-chip.c-waiting_client { box-shadow: inset 0 4px 0 #f87171; }
+  .wam-headright .wam-chip.c-blocked { box-shadow: inset 0 4px 0 #d1d5db; }
+  .wam-headright .wam-chip.c-os_progress { box-shadow: inset 0 4px 0 #93c5fd; }
   .wam-ob-minetext { display: block; padding: 10px 12px; border-radius: 12px; border: 2px solid color-mix(in srgb, var(--c) 30%, var(--color-border-line)); background: color-mix(in srgb, var(--c) 5%, var(--color-panel)); font-size: 15px; line-height: 1.45; font-weight: 600; white-space: pre-wrap; }
 </style>
 </head>
@@ -371,7 +379,7 @@
   const obAv = (s) => OB_AV[[...String(s)].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7) % OB_AV.length];
   const safeUrl = (u) => (/^https:\/\//.test(String(u || '')) ? u : '');
 
-  const OB_PICKS = [['waiting_client', 'Waiting for client'], ['waiting_am', 'Waiting for AM'], ['os_progress', 'Onboarding specialist in progress'], ['ready', 'Ready to launch']];
+  const OB_PICKS = [['waiting_client', 'Waiting for client'], ['waiting_am', 'Waiting for AM'], ['os_progress', 'Onboarding specialist in progress'], ['ready', 'Ready to launch'], ['blocked', 'Blocked']];
   function obBoard(o) {
     const sec = el('section', 'wam-mgr wam-ob'); sec.id = 'mark-onboarding'; sec.dataset.mgr = 'mark'; sec.style.setProperty('--c', '#2563eb');
     const head = el('div', 'wam-mgr-head');
@@ -381,7 +389,7 @@
     nm.append(el('h2', 'wam-mgr-name', 'Mark Pilio Onboarding'), el('span', 'wam-ob-sub', o.error ? 'Onboarding list could not be read on the last update' : 'Pre-launch clients from the ClickUp onboarding list · oldest follow-up first'));
     id.append(nm);
     const chips = el('div', 'wam-chips');
-    if (!o.error) [['Total number of onboarding', o.total != null ? o.total : o.count, ''], ...OB_PICKS.map(([k, l]) => [l, (o.picks || {})[k] || 0, ''])]
+    if (!o.error) [['Total number of onboarding', o.total != null ? o.total : o.count, ''], ...OB_PICKS.map(([k, l]) => [l, (o.picks || {})[k] || 0, 'c-' + k])]
       .forEach(([l, v, st]) => { const c = el('div', 'wam-chip ' + st); c.append(el('span', null, l), el('b', null, String(v))); chips.append(c); });
     head.append(id, headRight(sec, chips, 'onboarding clients'));
     const wrap = el('div', 'wam-tablewrap');
@@ -424,8 +432,7 @@
       const tdM = el('td', 'wam-ob-mine');
       const pk = OB_PICKS.find(([k]) => k === r.overall_pick);
       if (pk) tdM.append(el('span', 'wam-ob-pill p-' + pk[0], pk[1]));
-      if (r.overall_status) tdM.append(el('span', 'wam-ob-minetext', r.overall_status));
-      if (pk || r.overall_status) {
+      if (pk) {
         if (r.status_by || r.status_at) tdM.append(el('span', 'wam-ob-small', (r.status_by ? 'By ' + r.status_by : '') + (r.status_at ? (r.status_by ? ' · ' : '') + new Date(r.status_at).toLocaleDateString('en-US', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric' }) : '')));
       } else tdM.append(el('span', 'wam-ob-small', '—'));
       tr.append(tdC, tdAm, tdS, tdD, tdL, tdO, tdM);

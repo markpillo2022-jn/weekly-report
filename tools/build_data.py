@@ -118,7 +118,7 @@ def ob_date(ms):
 
 # Overall status picks set in the dashboard dropdown (data/team/ob_status docs, field "pick").
 OB_PICKS = {"waiting_client": "Waiting for client", "waiting_am": "Waiting for AM",
-            "os_progress": "Onboarding specialist in progress", "ready": "Ready to launch"}
+            "os_progress": "Onboarding specialist in progress", "ready": "Ready to launch", "blocked": "Blocked"}
 
 
 def build_onboarding(raw, now=None):
