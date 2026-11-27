@@ -176,6 +176,10 @@
   .wam-ob-comment .wam-ob-small { margin: 0 0 4px; }
   .wam-ob-comment .wam-ob-small b { color: var(--color-fg); font-weight: 700; }
   .wam-ob-empty { color: var(--color-fg-muted); font-size: 15px; }
+  .wam-obtable { min-width: 1280px; }
+  .wam-ob-comment { max-width: 400px; }
+  .wam-ob-mine { min-width: 230px; max-width: 300px; }
+  .wam-ob-minetext { display: block; padding: 10px 12px; border-radius: 12px; border: 2px solid color-mix(in srgb, var(--c) 30%, var(--color-border-line)); background: color-mix(in srgb, var(--c) 5%, var(--color-panel)); font-size: 15px; line-height: 1.45; font-weight: 600; white-space: pre-wrap; }
 </style>
 </head>
 <body>
@@ -237,7 +241,7 @@
       <li>Only campaigns whose name starts with "JN Conversion" count. Accounts with no such campaign are left out.</li>
       <li>Cost per lead is spend divided by Meta's Leads count for the same period. Green is at or under the target, red is over it. "No leads" means money was spent but no leads were recorded. A dash means nothing was spent.</li>
       <li>N/A means Meta doesn't let the report read that ad account yet. Amber rows were typed in by the team from Ads Manager.</li>
-      <li>Mark Pilio Onboarding lists the clients on Mark's ClickUp onboarding tasks (Onboarding › OB - Facebook Ads) that are not live yet. Stage is the most advanced ClickUp status across that client's tasks. Last activity is the latest task update or comment, red after 7 days. Overall status is the latest ClickUp comment.</li>
+      <li>Mark Pilio Onboarding lists the clients on Mark's ClickUp onboarding tasks (Onboarding › OB - Facebook Ads) that are not live yet. Stage is the most advanced ClickUp status across that client's tasks. Last activity is the latest task update or comment, red after 7 days. Summary is the latest ClickUp comment. Overall status is typed in by Mark on the team dashboard and copied here at each update.</li>
       <li>This page is a view-only copy. Auto-updates every day at 12 midnight (ad account time) and every 6 hours after that. An admin can also update it manually on the back end at any time.</li>
     </ul>
   </details>
@@ -341,10 +345,10 @@
     head.append(id, chips);
     const wrap = el('div', 'wam-tablewrap');
     const t = el('table', 'wam-table wam-obtable');
-    t.innerHTML = '<thead><tr><th scope="col">Client</th><th scope="col">AM</th><th scope="col">Stage</th><th scope="col">Days since start</th><th scope="col">Last activity</th><th scope="col">Overall status</th></tr></thead>';
+    t.innerHTML = '<thead><tr><th scope="col">Client</th><th scope="col">AM</th><th scope="col">Stage</th><th scope="col">Days since start</th><th scope="col">Last activity</th><th scope="col">Summary</th><th scope="col">Overall status</th></tr></thead>';
     const tb = el('tbody');
     const rows = (o.clients || []);
-    if (!rows.length) { const tr = el('tr'); const td = el('td', 'wam-ob-empty', o.error ? 'Not available right now.' : 'No clients in pre-launch right now.'); td.colSpan = 6; tr.append(td); tb.append(tr); }
+    if (!rows.length) { const tr = el('tr'); const td = el('td', 'wam-ob-empty', o.error ? 'Not available right now.' : 'No clients in pre-launch right now.'); td.colSpan = 7; tr.append(td); tb.append(tr); }
     rows.forEach((r) => {
       const tr = el('tr');
       const tdC = el('td'); const box = el('div', 'wam-ob-client');
@@ -376,7 +380,12 @@
         const h = el('span', 'wam-ob-small'); h.append('Last comment: ', el('b', null, r.comment_by || 'Someone'), ' — ' + r.comment_at);
         tdO.append(h, el('div', null, r.comment));
       } else tdO.append(el('span', 'wam-ob-small', 'No comments yet'));
-      tr.append(tdC, tdAm, tdS, tdD, tdL, tdO);
+      const tdM = el('td', 'wam-ob-mine');
+      if (r.overall_status) {
+        tdM.append(el('span', 'wam-ob-minetext', r.overall_status));
+        if (r.status_by || r.status_at) tdM.append(el('span', 'wam-ob-small', (r.status_by ? 'By ' + r.status_by : '') + (r.status_at ? (r.status_by ? ' · ' : '') + new Date(r.status_at).toLocaleDateString('en-US', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric' }) : '')));
+      } else tdM.append(el('span', 'wam-ob-small', '—'));
+      tr.append(tdC, tdAm, tdS, tdD, tdL, tdO, tdM);
       tb.append(tr);
     });
     t.append(tb); wrap.append(t); sec.append(head, wrap);

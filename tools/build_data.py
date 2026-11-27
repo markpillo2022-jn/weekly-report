@@ -11,6 +11,7 @@ RAW_DIR holds the answers saved by the nightly task:
   ob_tasks.json            ClickUp clickup_filter_tasks answer for Mark's open onboarding tasks (list 901405982858)
   ob_task_<id>.json        clickup_get_task answer for each of those tasks (for date_created)
   ob_comments_<id>.json    clickup_get_task_comments answer for each of those tasks
+  ob_status.json           list of typed overall-status docs from the dashboard store data/team/ob_status ({"id": client key, "text", "by", "at"})
 A Meta file holding {"error": "..."} (or missing) means the account could not be read.
 Same rules as the Claude dashboard: only JN Conversion campaigns count, accounts with none are hidden,
 cost per lead = spend / leads, last 7 days = 7 days ending on the last day of the 30-day pull; last 30 days = the whole daily pull.
@@ -108,7 +109,7 @@ def ob_client(name):
     n = re.split(r"\s+\(|\s+[—–]\s+|\s+-\s+", n)[0].strip()
     words = [re.sub(r"[^a-z0-9]", "", w) for w in n.lower().split()]
     words = [re.sub(r"s$", "", w) for w in words if w][:2]
-    return " ".join(words), n
+    return "-".join(words), n
 
 
 def ob_date(ms):
@@ -128,10 +129,11 @@ def build_onboarding(raw, now=None):
         if not any(str(x.get("id")) == OB_USER for x in t.get("assignees") or []):
             continue
         key, nm = ob_client(t.get("name"))
-        g = groups.setdefault(key, {"names": [], "tasks": []})
+        g = groups.setdefault(key, {"key": key, "names": [], "tasks": []})
         g["names"].append(nm)
         g["tasks"].append(t)
     order = [s for s, _ in OB_STAGES]
+    typed = {str(m.get("id")): m for m in (load(os.path.join(raw, "ob_status.json")) or []) if isinstance(m, dict)}
     rows = []
     for key, g in groups.items():
         sts = [str(t.get("status", "")).lower() for t in g["tasks"]]
@@ -163,7 +165,7 @@ def build_onboarding(raw, now=None):
         sd, ld = ob_date(start), ob_date(last_ms)
         text = re.sub(r"\s+", " ", str((last_c or {}).get("comment_text") or "")).strip()
         rows.append({
-            "client": name, "initials": "".join(w[0] for w in re.findall(r"[A-Za-z0-9]+", name)[:2]).upper(),
+            "key": key, "client": name, "initials": "".join(w[0] for w in re.findall(r"[A-Za-z0-9]+", name)[:2]).upper(),
             "url": str(lead["t"].get("url", "")),
             "started": sd.strftime("%-m/%-d/%Y") if sd else "",
             "days_since_start": (now.date() - sd.date()).days if sd else None,
@@ -177,6 +179,8 @@ def build_onboarding(raw, now=None):
             "comment_by": str(((last_c or {}).get("user") or {}).get("username", "")),
             "comment_at": ob_date(last_c["date"]).strftime("%b %-d, %Y") if last_c else "",
             "comment": text[:320] + ("…" if len(text) > 320 else ""),
+            "overall_status": str((typed.get(key) or {}).get("text", "")),
+            "status_by": str((typed.get(key) or {}).get("by", "")), "status_at": str((typed.get(key) or {}).get("at", "")),
         })
     rows.sort(key=lambda r: (-(r["days_idle"] if r["days_idle"] is not None else -1), r["client"]))
     return {"clients": rows, "count": len(rows), "stale": sum(1 for r in rows if (r["days_idle"] or 0) > 7),

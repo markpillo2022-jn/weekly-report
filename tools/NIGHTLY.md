@@ -22,6 +22,8 @@ Runs at 12:01 AM, 6:01 AM, 12:01 PM and 6:01 PM US Eastern (America/New_York). G
    subtasks false, fields ["status","assignees","date_updated"].
    Then for every task in it whose status is not "complete", "cancel services" or "cancelled":
    RAW/ob_task_<id>.json = clickup_get_task {task_id}   and   RAW/ob_comments_<id>.json = clickup_get_task_comments {task_id}.
+   RAW/ob_status.json: ArtifactData list collection "data/team/ob_status" on the same dashboard artifact, saved as a list of
+   {"id": doc_id, ...doc fields} (Mark's typed overall status per client). If it fails, save [].
    If any of these fail, save {"error": "<message>"} and carry on: the box shows as unavailable, the ads numbers still publish.
 5. python3 tools/build_data.py RAW data.json
 6. Commit only data.json ("Nightly data update <date>") and push to the Pages branch. Change nothing else.
